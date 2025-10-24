@@ -44,6 +44,13 @@
     .brand .logo { width: 36px; height: 36px; border-radius: 10px; background: radial-gradient(circle at 30% 30%, var(--accent), var(--accent-2)); display:grid; place-items:center; font-weight:800; color:#0b1220; }
     .menu { display:flex; gap: 18px; flex-wrap: wrap; }
     .menu a { padding: 8px 12px; border-radius: 10px; color: var(--muted); font-weight: 600; }
+    /* Mobile nav */
+    .hamburger{display:none; border:1px solid rgba(148,163,184,.25); background:rgba(148,163,184,.1); color:var(--text); padding:8px 12px; border-radius:12px; font-weight:800}
+    .mobile-menu{position:fixed; left:0; right:0; top:0; padding-top:var(--header-h,72px); background:rgba(11,18,32,.96); backdrop-filter:blur(8px); border-bottom:1px solid rgba(148,163,184,.15); display:none; z-index:9998}
+    .mobile-menu.open{display:block}
+    .mobile-menu .inner{width:min(1100px,92%); margin:0 auto; padding:14px 0 18px; display:grid; gap:8px}
+    .mobile-menu a{display:block; padding:12px 14px; border-radius:12px; color:var(--text); background:rgba(148,163,184,.08)}
+    .mobile-menu a:active{transform:translateY(1px)}
     .menu a:hover, .menu a:focus { outline: none; color: var(--text); background: rgba(167,139,250,.12); box-shadow: var(--ring); }
     .cta { padding: 10px 14px; border-radius: 12px; background: linear-gradient(90deg, var(--accent), var(--accent-2)); color:#0b1220; font-weight:800; }
 
@@ -98,6 +105,9 @@
     }
     @media (max-width: 520px) {
       .menu { display:none; }
+      .hamburger{display:block}
+      .gallery { grid-template-columns: repeat(2, 1fr); }
+    }
       .gallery { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
@@ -118,14 +128,49 @@
   <script defer>
     // Prosty lightbox dla galerii + nawigacja do sekcji
     document.addEventListener('DOMContentLoaded', () => {
+      const setHeaderH = () => {
+        const h = document.querySelector('header');
+        const hh = h ? h.getBoundingClientRect().height : 72;
+        document.documentElement.style.setProperty('--header-h', hh + 'px');
+        document.body.style.paddingTop = hh + 'px';
+      };
+      setHeaderH();
+      window.addEventListener('resize', setHeaderH);
+
       document.querySelectorAll('a[href^="#"]').forEach(a => {
         a.addEventListener('click', (e) => {
           const href = a.getAttribute('href');
           if (href === '#' || href === '#!') return;
           const el = document.querySelector(href);
           if (el) { e.preventDefault(); el.scrollIntoView({behavior:'smooth'}); }
+          // Zamknij mobilne menu po kliknięciu
+          mobileMenu.classList.remove('open');
+          mobileToggle.setAttribute('aria-expanded','false');
+          document.body.style.overflow='';
         });
       });
+
+      const overlay = document.createElement('dialog');
+      overlay.setAttribute('aria-label','Podgląd zdjęcia');
+      overlay.style.padding = 0; overlay.style.border = 'none'; overlay.style.background = 'transparent';
+      overlay.addEventListener('click', () => overlay.close());
+      const img = document.createElement('img'); img.style.maxWidth = 'min(92vw, 1200px)'; img.style.maxHeight = '85vh'; img.style.borderRadius = '14px';
+      overlay.appendChild(img); document.body.appendChild(overlay);
+      document.querySelectorAll('.gallery a').forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault(); img.src = link.href; overlay.showModal();
+        });
+      });
+
+      // Mobilne menu
+      const mobileToggle = document.getElementById('mobileToggle');
+      const mobileMenu = document.getElementById('mobileMenu');
+      mobileToggle?.addEventListener('click', ()=>{
+        const open = mobileMenu.classList.toggle('open');
+        mobileToggle.setAttribute('aria-expanded', String(open));
+        document.body.style.overflow = open ? 'hidden' : '';
+      });
+    });
 
       const overlay = document.createElement('dialog');
       overlay.setAttribute('aria-label','Podgląd zdjęcia');
@@ -158,13 +203,22 @@
         <span class="logo">🐾</span>
         <span>Psiakowo</span>
       </a>
+      <button class="hamburger" id="mobileToggle" aria-expanded="false" aria-controls="mobileMenu">Menu</button>
       <nav class="menu">
         <a href="#onas">O nas</a>
         <a href="#rasy">Nasze pieski</a>
         <a href="#galeria">Galeria</a>
         <a href="#opinie">Opinie</a>
         <a href="#kontakt">Kontakt</a>
-        <a href="#platnosci">Dane do przelewu</a>
+      </nav>
+      <nav class="mobile-menu" id="mobileMenu" aria-label="Menu mobilne">
+        <div class="inner">
+          <a href="#onas">O nas</a>
+          <a href="#rasy">Nasze pieski</a>
+          <a href="#galeria">Galeria</a>
+          <a href="#opinie">Opinie</a>
+          <a href="#kontakt">Kontakt</a>
+        </div>
       </nav>
     </div>
   </header>
@@ -346,28 +400,6 @@
     <div class="container">© <span id="y"></span> Psiakowo. Wszelkie prawa zastrzeżone.</div>
   </footer>
 
-  <script>document.getElementById('y').textContent = new Date().getFullYear();
-// Obsługa kopiowania (bez zwijania)
-(function(){
-  const w = document.getElementById('payWidget');
-  const btn = document.getElementById('payToggle');
-  function setState(open){
-    if(open){ w.classList.add('open'); btn.textContent='Zwiń'; btn.setAttribute('aria-expanded','true'); }
-    else { w.classList.remove('open'); btn.textContent='Pokaż'; btn.setAttribute('aria-expanded','false'); }
-  }
-  btn && btn.addEventListener('click',()=>{
-    setState(!w.classList.contains('open'));
-  });
-  document.querySelectorAll('[data-copy]').forEach(b=>{
-    b.addEventListener('click', async()=>{
-      const sel = b.getAttribute('data-copy');
-      const el = document.querySelector(sel);
-      if(!el) return;
-      const text = el.textContent.trim();
-      try { await navigator.clipboard.writeText(text); b.textContent='Skopiowano!'; setTimeout(()=>b.textContent='Kopiuj ' + (sel==='#tIban'?'numer':'tytuł'),1200); } catch(e){ b.textContent='Błąd kopiowania'; setTimeout(()=>b.textContent='Kopiuj',1200); }
-    });
-  });
-})();</script>
+  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
 </body>
 </html>
-<script>document.getElementById('y').textContent = new Date().getFullYear();</script>
