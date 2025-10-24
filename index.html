@@ -51,7 +51,13 @@
     .menu { display:flex; gap: 18px; flex-wrap: wrap; }
     .menu a { padding: 8px 12px; border-radius: 10px; color: var(--muted); font-weight: 600; }
     /* Mobile nav */
-    .hamburger{display:none; border:1px solid rgba(148,163,184,.25); background:rgba(148,163,184,.1); color:var(--text); padding:8px; border-radius:12px; font-weight:800; line-height:0; align-items:center; justify-content:center; }
+    .hamburger{display:none; border:1px solid rgba(148,163,184,.25); background:rgba(148,163,184,.1); color:var(--text); padding:8px; border-radius:12px; font-weight:800; line-height:0; align-items:center; justify-content:center; position:relative }
+.icon-close{display:none}
+.mobile-menu{position:fixed; left:0; right:0; top:0; padding-top:var(--header-h,72px); background:rgba(11,18,32,.96); backdrop-filter:blur(8px); border-bottom:1px solid rgba(148,163,184,.15); display:none; z-index:10000}
+.mobile-menu.open{display:block}
+.mobile-menu .inner{max-width:1100px; margin:0 auto; padding:14px clamp(14px,4vw,24px) 18px; display:grid; gap:8px}
+.mobile-menu a{display:block; padding:12px 14px; border-radius:12px; color: var(--text); background:rgba(148,163,184,.08)}
+.mobile-menu a:active{transform:translateY(1px)}
     .mobile-menu{position:fixed; left:0; right:0; top:0; padding-top:var(--header-h,72px); background:rgba(11,18,32,.96); backdrop-filter:blur(8px); border-bottom:1px solid rgba(148,163,184,.15); display:none; z-index:10000}
     .mobile-menu.open{display:block}
     .mobile-menu .inner{max-width:1100px; margin:0 auto; padding:14px clamp(14px,4vw,24px) 18px; display:grid; gap:8px}
@@ -111,24 +117,14 @@
     }
     @media (max-width: 520px) {
       .menu { display:none; }
-      .hamburger{display:flex}
+      .hamburger{display:flex; z-index:10001}
       .gallery { grid-template-columns: repeat(2, 1fr); }
-      #mapa p { display:grid; gap:8px; }
-      #mapa .cta { display:block; width: fit-content; }
+      .contact-grid{ grid-template-columns: 1fr; }
     }
-      .hamburger{display:flex}
-      .gallery { grid-template-columns: repeat(2, 1fr); }
-      /* container padding is already applied globally */
-      #mapa p { display:grid; gap:8px; }
-      #mapa .cta { display:block; width: fit-content; }
-    }
-      .hamburger{display:block}
-      .gallery { grid-template-columns: repeat(2, 1fr); }
-      .container { width: calc(100% - 28px); }
-      #mapa p { display:grid; gap:8px; }
-      #mapa .cta { display:block; width: fit-content; }
-    }
-  </style>
+    /* dodatkowe zabezpieczenia przed wychodzeniem za ekran */
+    .panel{max-width:100%}
+    form input, form textarea{max-width:100%}
+    </style>
 </head>
 <body>
   <header>
@@ -137,7 +133,10 @@
         <span class="logo">🐾</span>
         <span>Psiakowo</span>
       </a>
-      <button class="hamburger" id="mobileToggle" aria-expanded="false" aria-controls="mobileMenu" aria-label="Otwórz menu"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+      <button class="hamburger" id="mobileToggle" aria-expanded="false" aria-controls="mobileMenu" aria-label="Otwórz menu">
+        <span class="icon-burger" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+        <span class="icon-close" aria-hidden="true" style="display:none"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 6l12 12M18 6l-12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+      </button>
       <nav class="menu">
         <a href="#onas">O nas</a>
         <a href="#rasy">Nasze pieski</a>
@@ -367,11 +366,22 @@
     });
 
     // 3) Toggle mobilnego menu
+    const iconBurger = mobileToggle?.querySelector('.icon-burger');
+    const iconClose  = mobileToggle?.querySelector('.icon-close');
+    const setIcons = (open) => {
+      if(!iconBurger || !iconClose) return;
+      iconBurger.style.display = open ? 'none' : '';
+      iconClose.style.display  = open ? '' : 'none';
+    };
     mobileToggle?.addEventListener('click', () => {
       const open = mobileMenu.classList.toggle('open');
       mobileToggle.setAttribute('aria-expanded', String(open));
       document.body.style.overflow = open ? 'hidden' : '';
+      setIcons(open);
     });
+    // 3.1) Zamknięcie na ESC i klik obok
+    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && mobileMenu.classList.contains('open')) { mobileMenu.classList.remove('open'); mobileToggle.setAttribute('aria-expanded','false'); document.body.style.overflow=''; setIcons(false);} });
+    mobileMenu?.addEventListener('click', (e)=>{ if(e.target === mobileMenu) { mobileMenu.classList.remove('open'); mobileToggle.setAttribute('aria-expanded','false'); document.body.style.overflow=''; setIcons(false);} });
 
     // 4) Lightbox galerii
     const overlay = document.createElement('dialog');
