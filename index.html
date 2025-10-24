@@ -381,10 +381,14 @@
       iconBurger.style.display = open ? 'none' : 'inline-flex';
       iconClose.style.display  = open ? 'inline-flex' : 'none';
     };
+
+    mobileToggle?.addEventListener('click', () => {
+      const open = mobileMenu.classList.toggle('open');
       mobileToggle.setAttribute('aria-expanded', String(open));
       document.body.style.overflow = open ? 'hidden' : '';
       setIcons(open);
     });
+
     // 3.1) Zamknięcie na ESC i klik obok
     document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && mobileMenu.classList.contains('open')) { mobileMenu.classList.remove('open'); mobileToggle.setAttribute('aria-expanded','false'); document.body.style.overflow=''; setIcons(false);} });
     mobileMenu?.addEventListener('click', (e)=>{ if(e.target === mobileMenu) { mobileMenu.classList.remove('open'); mobileToggle.setAttribute('aria-expanded','false'); document.body.style.overflow=''; setIcons(false);} });
