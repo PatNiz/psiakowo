@@ -51,17 +51,14 @@
     .menu { display:flex; gap: 18px; flex-wrap: wrap; }
     .menu a { padding: 8px 12px; border-radius: 10px; color: var(--muted); font-weight: 600; }
     /* Mobile nav */
-    .hamburger{display:none; width:40px; height:40px; padding:0; border:1px solid rgba(148,163,184,.35); background:transparent; color:var(--text); border-radius:10px; font-weight:800; line-height:1; align-items:center; justify-content:center; cursor:pointer}
-.hamburger:active{transform:none; background:transparent}
-.hamburger svg{width:26px; height:26px}
+    .hamburger{display:none; border:1px solid rgba(148,163,184,.25); background:rgba(148,163,184,.1); color:var(--text); padding:8px; border-radius:12px; font-weight:800; line-height:0; align-items:center; justify-content:center; position:relative }
 .icon-close{display:none}
-.icon-close{display:none}
-.mobile-menu{position:fixed; left:0; right:0; top:0; padding-top:var(--header-h,72px); background:rgba(11,18,32,.96); backdrop-filter:blur(8px); border-bottom:1px solid rgba(148,163,184,.15); display:none; z-index:10000}
+.mobile-menu{position:fixed; left:0; right:0; top:var(--header-h,72px); background:rgba(11,18,32,.96); backdrop-filter:blur(8px); border-bottom:1px solid rgba(148,163,184,.15); display:none; z-index:9000}
 .mobile-menu.open{display:block}
 .mobile-menu .inner{max-width:1100px; margin:0 auto; padding:14px clamp(14px,4vw,24px) 18px; display:grid; gap:8px}
 .mobile-menu a{display:block; padding:12px 14px; border-radius:12px; color: var(--text); background:rgba(148,163,184,.08)}
 .mobile-menu a:active{transform:translateY(1px)}
-    .mobile-menu{position:fixed; left:0; right:0; top:0; padding-top:var(--header-h,72px); background:rgba(11,18,32,.96); backdrop-filter:blur(8px); border-bottom:1px solid rgba(148,163,184,.15); display:none; z-index:10000}
+    .mobile-menu{position:fixed; left:0; right:0; top:var(--header-h,72px); background:rgba(11,18,32,.96); backdrop-filter:blur(8px); border-bottom:1px solid rgba(148,163,184,.15); display:none; z-index:9000}
     .mobile-menu.open{display:block}
     .mobile-menu .inner{max-width:1100px; margin:0 auto; padding:14px clamp(14px,4vw,24px) 18px; display:grid; gap:8px}
     .mobile-menu a{display:block; padding:12px 14px; border-radius:12px; color: var(--text); background:rgba(148,163,184,.08)}
@@ -105,9 +102,9 @@
 
     /* Contact */
     .contact-grid { display:grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-    .panel { background: var(--panel); border: 1px solid rgba(148,163,184,.15); border-radius: var(--radius); padding: 18px; width:100%; box-sizing:border-box; }
-    .list { margin: 0; padding: 0; list-style: none; display:grid; gap: 6px; word-break: break-word; overflow-wrap: anywhere; }
-    .list li { display:flex; gap:10px; align-items:center; }
+    .panel { background: var(--panel); border: 1px solid rgba(148,163,184,.15); border-radius: var(--radius); padding: 18px; }
+    .list { margin: 0; padding: 0; list-style: none; display:grid; gap: 6px; overflow-wrap:anywhere; word-break:break-word; }
+    .list li { display:flex; gap:10px; align-items:flex-start; flex-wrap:wrap; }
     .list b { min-width: 110px; color: var(--muted); font-weight: 600; }
 
     /* Footer */
@@ -127,7 +124,10 @@
     /* dodatkowe zabezpieczenia przed wychodzeniem za ekran */
     .panel{max-width:100%}
     form input, form textarea{max-width:100%}
-    </style>
+    /* Układ stosu dla tekstu i przycisku */
+    .stack{display:flex; flex-wrap:wrap; align-items:center; gap:12px}
+    @media (max-width: 520px){ .stack{flex-direction:column; align-items:flex-start} .cta{ width:fit-content } }
+  </style>
 </head>
 <body>
   <header>
@@ -295,13 +295,14 @@
         </div>
         <div class="panel">
           <form action="mailto:hodowlapsiakowo@gmail.com" method="post" enctype="text/plain">
-            <label>Imię i nazwisko<br><input required name="name" style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(148,163,184,.25); background:#0b1220; color:var(--text); box-sizing:border-box;" /></label>
+            <label>Imię i nazwisko<br><input required name="name" style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(148,163,184,.25); background:#0b1220; color:var(--text)" /></label>
             <br><br>
-            <label>E‑mail<br><input required type="email" name="email" style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(148,163,184,.25); background:#0b1220; color:var(--text); box-sizing:border-box;" /></label>
+            <label>E‑mail<br><input required type="email" name="email" style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(148,163,184,.25); background:#0b1220; color:var(--text)" /></label>
             <br><br>
-            <label>Wiadomość<br><textarea required name="message" rows="5" style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(148,163,184,.25); background:#0b1220; color:var(--text); box-sizing:border-box;"></textarea></label>
+            <label>Wiadomość<br><textarea required name="message" rows="5" style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(148,163,184,.25); background:#0b1220; color:var(--text)"></textarea></label>
             <br><br>
             <button class="cta" type="submit">Wyślij</button>
+          </form>
         </div>
       </div>
     </div>
@@ -313,16 +314,23 @@
       <div class="panel">
         <ul class="list">
           <li><b>Odbiorca</b> Agnieszka Sikora</li>
-          <li><b>Tytuł</<section id="mapa">
+          <li><b>Tytuł</b> Rezerwacja / zakup szczenięcia</li>
+          <li><b>Bank</b> mBank</li>
+          <li><b>Numer rachunku</b> 88 1140 2004 0000 3002 7853 2630</li>
+          <li><b>Adres</b> Wzdół Rządowy 110, 26‑010 Bodzentyn</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="mapa">
     <div class="container">
       <h2 class="section-title">Mapa dojazdu</h2>
       <div class="panel">
         <div class="stack">
           <p class="lead" style="margin:0">Aby otworzyć mapę w Google, kliknij:</p>
-          <a class="cta" href="https://maps.google.com/?q=Wzdanel">
-        <p>Aby otworzyć mapę w Google, kliknij:
           <a class="cta" href="https://maps.google.com/?q=Wzd%C3%B3%C5%82%20Rz%C4%85dowy%20110%2C%2026-010%20Bodzentyn" target="_blank" rel="noopener">Mapa dojazdu</a>
-        </p>
+        </div>
       </div>
     </div>
   </section>
