@@ -21,20 +21,15 @@
       --accent-2: #a78bfa;
       --ring: 0 0 0 4px rgba(34,211,238,.25);
       --radius: 16px;
+      --header-h: 72px; /* bezpieczna wartość startowa; skrypt nadpisze */
     }
     * { box-sizing: border-box; }
     html, body {
-      margin: 0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
       background: linear-gradient(180deg, #0b1220 0%, #0b1220 60%, #0c1426 100%);
       color: var(--text);
-      padding-top: 76px;
       overflow-x: hidden;
-    }
-    body {
-      margin: 0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
-      background: linear-gradient(180deg, #0b1220 0%, #0b1220 60%, #0c1426 100%);
-      color: var(--text);
-      padding-top: 76px;
     }
     a { color: inherit; text-decoration: none; }
     img { display: block; max-width: 100%; height: auto; }
@@ -42,29 +37,41 @@
     /* Layout */
     .container { max-width: 1100px; margin-inline: auto; padding-inline: clamp(14px, 4vw, 24px); }
     header {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 9999; backdrop-filter: saturate(1.2) blur(8px);
-      background: rgba(11,18,32,.55); border-bottom: 1px solid rgba(148,163,184,.15);
+      position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
+      backdrop-filter: saturate(1.2) blur(8px);
+      background: rgba(11,18,32,.55);
+      border-bottom: 1px solid rgba(148,163,184,.15);
     }
     .nav { display:flex; align-items:center; justify-content:space-between; gap: 16px; padding: 14px 0; }
     .brand { display:flex; align-items:center; gap: 10px; font-weight: 800; letter-spacing: .2px; }
     .brand .logo { width: 36px; height: 36px; border-radius: 10px; background: radial-gradient(circle at 30% 30%, var(--accent), var(--accent-2)); display:grid; place-items:center; font-weight:800; color:#0b1220; }
     .menu { display:flex; gap: 18px; flex-wrap: wrap; }
     .menu a { padding: 8px 12px; border-radius: 10px; color: var(--muted); font-weight: 600; }
-    /* Mobile nav */
-    .hamburger{display:none; border:1px solid rgba(148,163,184,.25); background:rgba(148,163,184,.1); color:var(--text); padding:8px; border-radius:12px; font-weight:800; line-height:0; align-items:center; justify-content:center; position:relative }
-.icon-close{display:none}
-.mobile-menu{position:fixed; left:0; right:0; top:var(--header-h,72px); background:rgba(11,18,32,.96); backdrop-filter:blur(8px); border-bottom:1px solid rgba(148,163,184,.15); display:none; z-index:9000}
-.mobile-menu.open{display:block}
-.mobile-menu .inner{max-width:1100px; margin:0 auto; padding:14px clamp(14px,4vw,24px) 18px; display:grid; gap:8px}
-.mobile-menu a{display:block; padding:12px 14px; border-radius:12px; color: var(--text); background:rgba(148,163,184,.08)}
-.mobile-menu a:active{transform:translateY(1px)}
-    .mobile-menu{position:fixed; left:0; right:0; top:var(--header-h,72px); background:rgba(11,18,32,.96); backdrop-filter:blur(8px); border-bottom:1px solid rgba(148,163,184,.15); display:none; z-index:9000}
-    .mobile-menu.open{display:block}
-    .mobile-menu .inner{max-width:1100px; margin:0 auto; padding:14px clamp(14px,4vw,24px) 18px; display:grid; gap:8px}
-    .mobile-menu a{display:block; padding:12px 14px; border-radius:12px; color: var(--text); background:rgba(148,163,184,.08)}
-    .mobile-menu a:active{transform:translateY(1px)}
     .menu a:hover, .menu a:focus { outline: none; color: var(--text); background: rgba(167,139,250,.12); box-shadow: var(--ring); }
     .cta { padding: 10px 14px; border-radius: 12px; background: linear-gradient(90deg, var(--accent), var(--accent-2)); color:#0b1220; font-weight:800; }
+
+    /* Mobile nav (pojedynczy, uporządkowany blok) */
+    .hamburger{
+      display:none; width:40px; height:40px; padding:0;
+      border:1px solid rgba(148,163,184,.25); background:transparent; color:var(--text);
+      border-radius:10px; font-weight:800; line-height:1;
+      align-items:center; justify-content:center; position:relative; cursor:pointer;
+    }
+    .hamburger:active{ transform:none; background:transparent }
+    .hamburger svg{ width:26px; height:26px; display:block }
+    .hamburger svg path{ stroke: currentColor }
+    .icon-close{ display:none }
+
+    .mobile-menu{
+      position:fixed; left:0; right:0; top:var(--header-h,72px);
+      background:rgba(11,18,32,.96); backdrop-filter:blur(8px);
+      border-bottom:1px solid rgba(148,163,184,.15);
+      display:none; z-index:9000;
+    }
+    .mobile-menu.open{ display:block }
+    .mobile-menu .inner{ max-width:1100px; margin:0 auto; padding:14px clamp(14px,4vw,24px) 18px; display:grid; gap:8px }
+    .mobile-menu a{ display:block; padding:12px 14px; border-radius:12px; color: var(--text); background:rgba(148,163,184,.08) }
+    .mobile-menu a:active{ transform:translateY(1px) }
 
     /* Hero */
     .hero { padding: 72px 0 40px; position: relative; }
@@ -121,11 +128,13 @@
       .gallery { grid-template-columns: repeat(2, 1fr); }
       .contact-grid{ grid-template-columns: 1fr; }
     }
+
     /* dodatkowe zabezpieczenia przed wychodzeniem za ekran */
-    .panel{max-width:100%}
-    form input, form textarea{max-width:100%}
-    /* Układ stosu dla tekstu i przycisku */
-    .stack{display:flex; flex-wrap:wrap; align-items:center; gap:12px}
+    .panel{ max-width:100% }
+    form input, form textarea{ max-width:100% }
+
+    /* Tekst + przycisk w mapie */
+    .stack{ display:flex; flex-wrap:wrap; align-items:center; gap:12px }
     @media (max-width: 520px){ .stack{flex-direction:column; align-items:flex-start} .cta{ width:fit-content } }
   </style>
 </head>
@@ -137,8 +146,12 @@
         <span>Psiakowo</span>
       </a>
       <button class="hamburger" id="mobileToggle" aria-expanded="false" aria-controls="mobileMenu" aria-label="Otwórz menu">
-        <span class="icon-burger" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
-        <span class="icon-close" aria-hidden="true" style="display:none"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 6l12 12M18 6l-12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+        <span class="icon-burger" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </span>
+        <span class="icon-close" aria-hidden="true" style="display:none">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 6l12 12M18 6l-12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </span>
       </button>
       <nav class="menu">
         <a href="#onas">O nas</a>
@@ -147,7 +160,8 @@
         <a href="#opinie">Opinie</a>
         <a href="#kontakt">Kontakt</a>
       </nav>
-      <nav class="mobile-menu" id="mobileMenu" aria-label="Menu mobilne" hidden>
+      <!-- MENU MOBILNE: bez 'hidden'; widoczność sterowana tylko klasą .open -->
+      <nav class="mobile-menu" id="mobileMenu" aria-label="Menu mobilne">
         <div class="inner">
           <a href="#onas">O nas</a>
           <a href="#rasy">Nasze pieski</a>
@@ -286,148 +300,4 @@
       <div class="contact-grid">
         <div class="panel">
           <ul class="list">
-            <li><b>Telefon</b> <a href="tel:+48661872192">+48 661 872 192</a></li>
-            <li><b>E‑mail</b> <a href="mailto:hodowlapsiakowo@gmail.com">hodowlapsiakowo@gmail.com</a></li>
-            <li><b>Adres</b> Wzdół Rządowy 110, 26‑010 Bodzentyn</li>
-            <li><b>NIP</b> 657‑294‑36‑74</li>
-            <li><b>REGON</b> 382766750</li>
-          </ul>
-        </div>
-        <div class="panel">
-          <form action="mailto:hodowlapsiakowo@gmail.com" method="post" enctype="text/plain">
-            <label>Imię i nazwisko<br><input required name="name" style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(148,163,184,.25); background:#0b1220; color:var(--text)" /></label>
-            <br><br>
-            <label>E‑mail<br><input required type="email" name="email" style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(148,163,184,.25); background:#0b1220; color:var(--text)" /></label>
-            <br><br>
-            <label>Wiadomość<br><textarea required name="message" rows="5" style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(148,163,184,.25); background:#0b1220; color:var(--text)"></textarea></label>
-            <br><br>
-            <button class="cta" type="submit">Wyślij</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="platnosci">
-    <div class="container">
-      <h2 class="section-title">Dane do przelewu</h2>
-      <div class="panel">
-        <ul class="list">
-          <li><b>Odbiorca</b> Agnieszka Sikora</li>
-          <li><b>Tytuł</b> Rezerwacja / zakup szczenięcia</li>
-          <li><b>Bank</b> mBank</li>
-          <li><b>Numer rachunku</b> 88 1140 2004 0000 3002 7853 2630</li>
-          <li><b>Adres</b> Wzdół Rządowy 110, 26‑010 Bodzentyn</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <section id="mapa">
-    <div class="container">
-      <h2 class="section-title">Mapa dojazdu</h2>
-      <div class="panel">
-        <div class="stack">
-          <p class="lead" style="margin:0">Aby otworzyć mapę w Google, kliknij:</p>
-          <a class="cta" href="https://maps.google.com/?q=Wzd%C3%B3%C5%82%20Rz%C4%85dowy%20110%2C%2026-010%20Bodzentyn" target="_blank" rel="noopener">Mapa dojazdu</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <footer>
-    <div class="container">© <span id="y"></span> Psiakowo. Wszelkie prawa zastrzeżone.</div>
-  </footer>
-
-  <script>
-  document.getElementById('y').textContent = new Date().getFullYear();
-  document.addEventListener('DOMContentLoaded', () => {
-    // 1) Dynamiczny padding pod stały header
-    const setHeaderH = () => {
-      const h = document.querySelector('header');
-      const hh = h ? Math.round(h.getBoundingClientRect().height) : 72;
-      document.documentElement.style.setProperty('--header-h', hh + 'px');
-      document.body.style.paddingTop = hh + 'px';
-    };
-    setHeaderH();
-    window.addEventListener('resize', setHeaderH);
-
-    // 2) Smooth scroll + zamykanie mobilnego menu po kliknięciu
-    const mobileMenu  = document.getElementById('mobileMenu');
-    const mobileToggle = document.getElementById('mobileToggle');
-    document.querySelectorAll('a[href^="#"]').forEach(a => {
-      a.addEventListener('click', (e) => {
-        const href = a.getAttribute('href');
-        if (href === '#' || href === '#!') return;
-        const el = document.querySelector(href);
-        if (el) { e.preventDefault(); el.scrollIntoView({behavior:'smooth'}); }
-        if (mobileMenu?.classList.contains('open')) {
-          mobileMenu.classList.remove('open');
-          mobileToggle?.setAttribute('aria-expanded','false');
-          document.body.style.overflow = '';
-        }
-      });
-    });
-
-    // 3) Toggle mobilnego menu
-    const iconBurger = mobileToggle?.querySelector('.icon-burger');
-    const iconClose  = mobileToggle?.querySelector('.icon-close');
-    const setIcons = (open) => {
-      if(!iconBurger || !iconClose) return;
-      iconBurger.style.display = open ? 'none' : 'inline-flex';
-      iconClose.style.display  = open ? 'inline-flex' : 'none';
-    };
-    mobileToggle?.addEventListener('click', () => {
-      const open = mobileMenu.classList.toggle('open');
-      mobileToggle.setAttribute('aria-expanded', String(open));
-      if (open) {
-        mobileMenu.removeAttribute('hidden');
-        document.body.style.overflow = 'hidden';
-      } else {
-        mobileMenu.setAttribute('hidden', '');
-        document.body.style.overflow = '';
-      }
-      setIcons(open);
-    });
-      mobileToggle.setAttribute('aria-expanded', String(open));
-      document.body.style.overflow = open ? 'hidden' : '';
-      setIcons(open);
-    });
-    // 3.1) Zamknięcie na ESC i klik obok
-    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && mobileMenu.classList.contains('open')) {
-        mobileMenu.classList.remove('open');
-        mobileMenu.setAttribute('hidden','');
-        mobileToggle.setAttribute('aria-expanded','false');
-        document.body.style.overflow='';
-        setIcons(false);
-      }
-    });
-    mobileMenu?.addEventListener('click', (e)=>{ if(e.target === mobileMenu) {
-        mobileMenu.classList.remove('open');
-        mobileMenu.setAttribute('hidden','');
-        mobileToggle.setAttribute('aria-expanded','false');
-        document.body.style.overflow='';
-        setIcons(false);
-      }
-    });
-
-    // 4) Lightbox galerii
-    const overlay = document.createElement('dialog');
-    overlay.setAttribute('aria-label','Podgląd zdjęcia');
-    overlay.style.padding = 0; overlay.style.border = 'none'; overlay.style.background = 'transparent';
-    overlay.addEventListener('click', () => overlay.close());
-    const img = document.createElement('img');
-    img.style.maxWidth = 'min(92vw, 1200px)';
-    img.style.maxHeight = '85vh';
-    img.style.borderRadius = '14px';
-    overlay.appendChild(img);
-    document.body.appendChild(overlay);
-    document.querySelectorAll('.gallery a').forEach(link => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault(); img.src = link.href; overlay.showModal();
-      });
-    });
-  });
-  </script>
-</body>
-</html>
+            <li><b>Telefon</b> <a href="tel:+48661872192">+48 6
