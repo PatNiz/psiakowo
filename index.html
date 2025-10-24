@@ -28,6 +28,7 @@
       margin: 0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
       background: linear-gradient(180deg, #0b1220 0%, #0b1220 60%, #0c1426 100%);
       color: var(--text);
+      padding-top: 76px;
     }
     a { color: inherit; text-decoration: none; }
     img { display: block; max-width: 100%; height: auto; }
@@ -35,7 +36,7 @@
     /* Layout */
     .container { width: min(1100px, 92%); margin-inline: auto; }
     header {
-      position: sticky; top: 0; z-index: 50; backdrop-filter: saturate(1.2) blur(8px);
+      position: fixed; top: 0; left: 0; right: 0; z-index: 9999; backdrop-filter: saturate(1.2) blur(8px);
       background: rgba(11,18,32,.55); border-bottom: 1px solid rgba(148,163,184,.15);
     }
     .nav { display:flex; align-items:center; justify-content:space-between; gap: 16px; padding: 14px 0; }
@@ -57,7 +58,7 @@
     .hero-card img { border-radius: 14px; aspect-ratio: 4 / 3; object-fit: cover; }
 
     /* Sections */
-    section { padding: 64px 0; }
+    section { padding: 64px 0; scroll-margin-top: 88px; }
     .section-title { font-size: clamp(22px, 3vw, 32px); margin: 0 0 24px; }
     .cards { display:grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
     .card { background: var(--panel); border: 1px solid rgba(148,163,184,.15); border-radius: var(--radius); overflow: hidden; }
@@ -99,6 +100,20 @@
       .menu { display:none; }
       .gallery { grid-template-columns: repeat(2, 1fr); }
     }
+  </style>
+  <style>
+    /* ZAWSZE widoczny pasek płatności (bez zwijania) */
+    .pay-fixed{position:fixed;left:0;right:0;bottom:0;z-index:120}
+    .pay-bar{width:100%;background:var(--panel);border-top:1px solid rgba(148,163,184,.25);box-shadow:0 -6px 24px rgba(0,0,0,.35)}
+    .pay-inner{width:min(1100px,92%);margin:0 auto;display:flex;gap:14px;align-items:center;justify-content:space-between;padding:10px 0}
+    .pay-rows{display:flex;gap:18px;flex-wrap:wrap;align-items:center}
+    .pay-row{display:flex;gap:8px;align-items:center}
+    .pay-row b{min-width:auto;color:var(--muted)}
+    .pay-actions{display:flex;gap:8px;flex-wrap:wrap}
+    .btn-mini{border:none;border-radius:10px;padding:6px 10px;font-weight:700;background:rgba(148,163,184,.15);color:var(--text);cursor:pointer}
+    .btn-mini:focus{outline:none;box-shadow:var(--ring)}
+    @media (max-width:700px){.pay-inner{flex-direction:column;align-items:flex-start;padding:12px 0}}
+    @media (max-width:520px){.pay-actions{width:100%}
   </style>
   <script defer>
     // Prosty lightbox dla galerii + nawigacja do sekcji
@@ -149,6 +164,7 @@
         <a href="#galeria">Galeria</a>
         <a href="#opinie">Opinie</a>
         <a href="#kontakt">Kontakt</a>
+        <a href="#platnosci">Dane do przelewu</a>
       </nav>
     </div>
   </header>
@@ -224,9 +240,6 @@
         <p class="lead" style="margin-top:10px;">Dane bazowe zgodne ze standardem FCI nr 92 i literaturą hodowlaną.</p>
       </div>
     </div>
-  </section>
-
-  <section id="galeria"></div>
   </section>
 
   <section id="galeria">
@@ -332,6 +345,29 @@
   <footer>
     <div class="container">© <span id="y"></span> Psiakowo. Wszelkie prawa zastrzeżone.</div>
   </footer>
-  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+
+  <script>document.getElementById('y').textContent = new Date().getFullYear();
+// Obsługa kopiowania (bez zwijania)
+(function(){
+  const w = document.getElementById('payWidget');
+  const btn = document.getElementById('payToggle');
+  function setState(open){
+    if(open){ w.classList.add('open'); btn.textContent='Zwiń'; btn.setAttribute('aria-expanded','true'); }
+    else { w.classList.remove('open'); btn.textContent='Pokaż'; btn.setAttribute('aria-expanded','false'); }
+  }
+  btn && btn.addEventListener('click',()=>{
+    setState(!w.classList.contains('open'));
+  });
+  document.querySelectorAll('[data-copy]').forEach(b=>{
+    b.addEventListener('click', async()=>{
+      const sel = b.getAttribute('data-copy');
+      const el = document.querySelector(sel);
+      if(!el) return;
+      const text = el.textContent.trim();
+      try { await navigator.clipboard.writeText(text); b.textContent='Skopiowano!'; setTimeout(()=>b.textContent='Kopiuj ' + (sel==='#tIban'?'numer':'tytuł'),1200); } catch(e){ b.textContent='Błąd kopiowania'; setTimeout(()=>b.textContent='Kopiuj',1200); }
+    });
+  });
+})();</script>
 </body>
 </html>
+<script>document.getElementById('y').textContent = new Date().getFullYear();</script>
