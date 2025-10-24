@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Psiakowo – Mastif pirenejski (hodowla)</title>
+  <meta name="description" content="Hodowla mastifa pirenejskiego – informacje o rasie, galeria, opinie, kontakt i dojazd." />
+  <meta property="og:title" content="Psiakowo – Mastif pirenejski" />
+  <meta property="og:description" content="Mastif pirenejski – poznaj rasę, zobacz galerię i skontaktuj się z hodowlą." />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="pl_PL" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b1220;
+      --panel: #0f172a;
+      --muted: #94a3b8;
+      --text: #e2e8f0;
+      --accent: #22d3ee;
+      --accent-2: #a78bfa;
+      --ring: 0 0 0 4px rgba(34,211,238,.25);
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      background: linear-gradient(180deg, #0b1220 0%, #0b1220 60%, #0c1426 100%);
+      color: var(--text);
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; height: auto; }
+
+    /* Layout */
+    .container { width: min(1100px, 92%); margin-inline: auto; }
+    header {
+      position: sticky; top: 0; z-index: 50; backdrop-filter: saturate(1.2) blur(8px);
+      background: rgba(11,18,32,.55); border-bottom: 1px solid rgba(148,163,184,.15);
+    }
+    .nav { display:flex; align-items:center; justify-content:space-between; gap: 16px; padding: 14px 0; }
+    .brand { display:flex; align-items:center; gap: 10px; font-weight: 800; letter-spacing: .2px; }
+    .brand .logo { width: 36px; height: 36px; border-radius: 10px; background: radial-gradient(circle at 30% 30%, var(--accent), var(--accent-2)); display:grid; place-items:center; font-weight:800; color:#0b1220; }
+    .menu { display:flex; gap: 18px; flex-wrap: wrap; }
+    .menu a { padding: 8px 12px; border-radius: 10px; color: var(--muted); font-weight: 600; }
+    .menu a:hover, .menu a:focus { outline: none; color: var(--text); background: rgba(167,139,250,.12); box-shadow: var(--ring); }
+    .cta { padding: 10px 14px; border-radius: 12px; background: linear-gradient(90deg, var(--accent), var(--accent-2)); color:#0b1220; font-weight:800; }
+
+    /* Hero */
+    .hero { padding: 72px 0 40px; position: relative; }
+    .hero-grid { display:grid; grid-template-columns: 1.1fr .9fr; gap: 32px; align-items:center; }
+    .badge { display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border:1px solid rgba(34,211,238,.35); color: var(--accent); background: rgba(34,211,238,.08); border-radius: 999px; font-weight: 700; }
+    .h1 { font-size: clamp(28px, 4vw, 48px); line-height: 1.05; margin: 14px 0 10px; letter-spacing: -0.02em; }
+    .lead { color: var(--muted); font-size: clamp(16px, 1.6vw, 18px); }
+    .hero-card { background: radial-gradient(1200px 400px at 20% -10%, rgba(167,139,250,.25), transparent 60%), var(--panel);
+      border: 1px solid rgba(148,163,184,.15); border-radius: var(--radius); padding: 18px; }
+    .hero-card img { border-radius: 14px; aspect-ratio: 4 / 3; object-fit: cover; }
+
+    /* Sections */
+    section { padding: 64px 0; }
+    .section-title { font-size: clamp(22px, 3vw, 32px); margin: 0 0 24px; }
+    .cards { display:grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .card { background: var(--panel); border: 1px solid rgba(148,163,184,.15); border-radius: var(--radius); overflow: hidden; }
+    .card img { aspect-ratio: 4 / 3; object-fit: cover; }
+    .card .p { padding: 16px; }
+    .pill { display:inline-block; font-size: 12px; letter-spacing:.3px; text-transform:uppercase; color: var(--muted); }
+
+    /* Gallery */
+    .gallery { display:grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }
+    .gallery a { border-radius: 12px; overflow:hidden; border:1px solid rgba(148,163,184,.15); }
+    .gallery img { aspect-ratio: 1 / 1; object-fit: cover; width: 100%; height: 100%; }
+
+    /* Features */
+    .features { display:grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .feature { background: var(--panel); border:1px solid rgba(148,163,184,.15); padding:18px; border-radius: var(--radius); }
+    .feature .n { font-size: 28px; font-weight: 800; color: var(--accent); }
+
+    /* Opinions */
+    .opinions { display:grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .op { background: var(--panel); border:1px solid rgba(148,163,184,.15); padding:18px; border-radius: var(--radius); color: var(--muted); }
+    .op .who { color: var(--text); font-weight: 700; margin-top: 8px; }
+
+    /* Contact */
+    .contact-grid { display:grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .panel { background: var(--panel); border: 1px solid rgba(148,163,184,.15); border-radius: var(--radius); padding: 18px; }
+    .list { margin: 0; padding: 0; list-style: none; display:grid; gap: 6px; }
+    .list li { display:flex; gap:10px; align-items:center; }
+    .list b { min-width: 110px; color: var(--muted); font-weight: 600; }
+
+    /* Footer */
+    footer { padding: 26px 0 60px; color: var(--muted); text-align:center; }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .hero-grid, .cards, .features, .opinions, .contact-grid { grid-template-columns: 1fr; }
+      .gallery { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 520px) {
+      .menu { display:none; }
+      .gallery { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+  <script defer>
+    // Prosty lightbox dla galerii + nawigacja do sekcji
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('a[href^="#"]').forEach(a => {
+        a.addEventListener('click', (e) => {
+          const href = a.getAttribute('href');
+          if (href === '#' || href === '#!') return;
+          const el = document.querySelector(href);
+          if (el) { e.preventDefault(); el.scrollIntoView({behavior:'smooth'}); }
+        });
+      });
+
+      const overlay = document.createElement('dialog');
+      overlay.setAttribute('aria-label','Podgląd zdjęcia');
+      overlay.style.padding = 0; overlay.style.border = 'none'; overlay.style.background = 'transparent';
+      overlay.addEventListener('click', () => overlay.close());
+      const img = document.createElement('img'); img.style.maxWidth = 'min(92vw, 1200px)'; img.style.maxHeight = '85vh'; img.style.borderRadius = '14px';
+      overlay.appendChild(img); document.body.appendChild(overlay);
+      document.querySelectorAll('.gallery a').forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault(); img.src = link.href; overlay.showModal();
+        });
+      });
+    });
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "AnimalShelter",
+    "name": "Hodowla Psów Rasowych Psiakowo",
+    "address": {"@type":"PostalAddress","streetAddress":"Wzdół Rządowy 110","postalCode":"26-010","addressLocality":"Bodzentyn","addressCountry":"PL"},
+    "telephone": "+48 661 872 192",
+    "email": "hodowlapsiakowo@gmail.com"
+  }
+  </script>
+</head>
+<body>
+  <header>
+    <div class="container nav" role="navigation" aria-label="Główne">
+      <a href="#start" class="brand">
+        <span class="logo">🐾</span>
+        <span>Psiakowo</span>
+      </a>
+      <nav class="menu">
+        <a href="#onas">O nas</a>
+        <a href="#rasy">Nasze pieski</a>
+        <a href="#galeria">Galeria</a>
+        <a href="#opinie">Opinie</a>
+        <a href="#kontakt">Kontakt</a>
+        <a href="#platnosci" class="cta">Dane do przelewu</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="start" class="hero">
+    <div class="container hero-grid">
+      <div>
+        <span class="badge">Hodowla mastifa pirenejskiego</span>
+        <h1 class="h1">Mastif pirenejski – spokojny olbrzym z sercem do ludzi</h1>
+        <p class="lead">Specjalizujemy się w rasie mastif pirenejski. Dbamy o prawidłową socjalizację, zdrowie i wsparcie dla nowych opiekunów. Zapewniamy pełną dokumentację, wsparcie po zakupie oraz zdrową socjalizację szczeniąt.</p>
+        <p style="margin-top:18px; display:flex; gap:10px; flex-wrap:wrap;">
+          <a class="cta" href="#rasy">O rasie</a>
+          <a class="cta" style="background:linear-gradient(90deg, var(--accent-2), var(--accent));" href="#kontakt">Skontaktuj się</a>
+        </p>
+      </div>
+      <div class="hero-card">
+        <img loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/e/ed/Pyrenean_Mastiff.JPG" alt="Mastif pirenejski – dorosły pies w plenerze" />
+      </div>
+    </div>
+  </main>
+
+  <section id="onas">
+    <div class="container">
+      <h2 class="section-title">O nas</h2>
+      <p class="lead">Nazywam się <strong>Agnieszka Sikora</strong> i od ponad ośmiu lat prowadzę z pasją hodowlę „Psiakowo”. Działamy zgodnie z przepisami, zapewniając przejrzystość i najwyższe standardy opieki.</p>
+    </div>
+  </section>
+
+  <section id="rasy">
+    <div class="container">
+      <h2 class="section-title">Mastif pirenejski</h2>
+      <div class="cards" role="list">
+        <article class="card" role="listitem">
+          <img loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/1/11/MasPiri-Puma-FIN.jpg" alt="Mastif pirenejski – profil" />
+          <div class="p">
+            <span class="pill">Charakter</span>
+            <h3>Spokojny, oddany, czujny</h3>
+            <p>Równowaga i przywiązanie do rodziny; naturalny stróż o łagodnym usposobieniu.</p>
+          </div>
+        </article>
+        <article class="card" role="listitem">
+          <img loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/a/a8/MasPiri-Astro-SVE.jpg" alt="Szczenię mastifa pirenejskiego" />
+          <div class="p">
+            <span class="pill">Pielęgnacja</span>
+            <h3>Sierść i zdrowie</h3>
+            <p>Regularne szczotkowanie, rozsądny ruch, profilaktyka stawów i kontrola masy ciała.</p>
+          </div>
+        </article>
+        <article class="card" role="listitem">
+          <img loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/6/68/MasPiri-Lula-ESP.jpg" alt="Mastif pirenejski na spacerze" />
+          <div class="p">
+            <span class="pill">Dla kogo</span>
+            <h3>Dom z ogrodem</h3>
+            <p>Najlepiej odnajduje się przy spokojnych, konsekwentnych opiekunach w przestrzeni z ogrodem.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="orasie">
+    <div class="container">
+      <h2 class="section-title">O rasie: mastif pirenejski</h2>
+      <div class="panel">
+        <ul class="list">
+          <li><b>Pochodzenie</b> Hiszpania (Aragonia); dawnej stróż owiec podczas transhumancji.</li>
+          <li><b>Klasyfikacja FCI</b> Grupa 2 – Molosy, sekcja 2.2 (bez próby pracy).</li>
+          <li><b>Wysokość w kębie</b> min. 77 cm psy, 72 cm suki; preferowane większe, brak górnej granicy.</li>
+          <li><b>Charakter</b> spokojny, zrównoważony, oddany rodzinie, czujny stróż.</li>
+          <li><b>Szata i kolory</b> biała z łatami różnych odcieni (najczęściej szaro-czarne, prężowane, płowe), maska na głowie.</li>
+          <li><b>Pielęgnacja</b> regularne szczotkowanie, dbałość o stawy i wagę, odpowiednia przestrzeń i ruch.</li>
+        </ul>
+        <p class="lead" style="margin-top:10px;">Dane bazowe zgodne ze standardem FCI nr 92 i literaturą hodowlaną.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="galeria"></div>
+  </section>
+
+  <section id="galeria">
+    <div class="container">
+      <h2 class="section-title">Galeria zdjęć</h2>
+      <div class="gallery">
+        <a href="https://upload.wikimedia.org/wikipedia/commons/e/ed/Pyrenean_Mastiff.JPG"><img loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/e/ed/Pyrenean_Mastiff.JPG" alt="Mastif pirenejski – wystawa"></a>
+        <a href="https://upload.wikimedia.org/wikipedia/commons/f/f7/Mastif_pirenejski_987.jpg"><img loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/f/f7/Mastif_pirenejski_987.jpg" alt="Mastif pirenejski – profil"></a>
+        <a href="https://upload.wikimedia.org/wikipedia/commons/1/11/MasPiri-Puma-FIN.jpg"><img loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/1/11/MasPiri-Puma-FIN.jpg" alt="Mastif pirenejski – stojący"></a>
+        <a href="https://upload.wikimedia.org/wikipedia/commons/a/a8/MasPiri-Astro-SVE.jpg"><img loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/a/a8/MasPiri-Astro-SVE.jpg" alt="Mastif pirenejski – czarno-biały"></a>
+        <a href="https://upload.wikimedia.org/wikipedia/commons/6/68/MasPiri-Lula-ESP.jpg"><img loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/6/68/MasPiri-Lula-ESP.jpg" alt="Mastif pirenejski – suka"></a>
+        <a href="https://upload.wikimedia.org/wikipedia/commons/e/ed/Pyrenean_Mastiff.JPG"><img loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/e/ed/Pyrenean_Mastiff.JPG" alt="Mastif pirenejski – ring"></a>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="features">
+        <div class="feature">
+          <div class="n">01.</div>
+          <h3>Pochodzenie</h3>
+          <p>Pełna dokumentacja pochodzenia, umowa kupna-sprzedaży oraz książeczka zdrowia.</p>
+        </div>
+        <div class="feature">
+          <div class="n">02.</div>
+          <h3>Przejrzystość</h3>
+          <p>Zarejestrowani, nadzorowani i działający zgodnie z przepisami oraz dobrem zwierząt.</p>
+        </div>
+        <div class="feature">
+          <div class="n">03.</div>
+          <h3>Kontakt</h3>
+          <p>Wsparcie i doradztwo przed i po zakupie szczeniaka – zawsze do dyspozycji.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="opinie">
+    <div class="container">
+      <h2 class="section-title">Wasze opinie</h2>
+      <div class="opinions">
+        <div class="op">„Polecam pod każdym względem. Jesteśmy bardzo zadowoleni :)”<div class="who">— Eryk</div></div>
+        <div class="op">„Profesjonalna hodowla, świetny kontakt i wsparcie po zakupie.”<div class="who">— Mikołaj</div></div>
+        <div class="op">„Jamniczek ma się znakomicie i daje mnóstwo radości.”<div class="who">— Grzegorz</div></div>
+      </div>
+      <p class="lead" style="margin-top:14px;">Możemy też wstawić wtyczkę opinii z Google/Trustindex – daj znać, jeśli chcesz.</p>
+    </div>
+  </section>
+
+  <section id="kontakt">
+    <div class="container">
+      <h2 class="section-title">Dane kontaktowe</h2>
+      <div class="contact-grid">
+        <div class="panel">
+          <ul class="list">
+            <li><b>Telefon</b> <a href="tel:+48661872192">+48 661 872 192</a></li>
+            <li><b>E‑mail</b> <a href="mailto:hodowlapsiakowo@gmail.com">hodowlapsiakowo@gmail.com</a></li>
+            <li><b>Adres</b> Wzdół Rządowy 110, 26‑010 Bodzentyn</li>
+            <li><b>NIP</b> 657‑294‑36‑74</li>
+            <li><b>REGON</b> 382766750</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <form action="mailto:hodowlapsiakowo@gmail.com" method="post" enctype="text/plain">
+            <label>Imię i nazwisko<br><input required name="name" style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(148,163,184,.25); background:#0b1220; color:var(--text)" /></label>
+            <br><br>
+            <label>E‑mail<br><input required type="email" name="email" style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(148,163,184,.25); background:#0b1220; color:var(--text)" /></label>
+            <br><br>
+            <label>Wiadomość<br><textarea required name="message" rows="5" style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(148,163,184,.25); background:#0b1220; color:var(--text)"></textarea></label>
+            <br><br>
+            <button class="cta" type="submit">Wyślij</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="platnosci">
+    <div class="container">
+      <h2 class="section-title">Dane do przelewu</h2>
+      <div class="panel">
+        <ul class="list">
+          <li><b>Odbiorca</b> Agnieszka Sikora</li>
+          <li><b>Tytuł</b> Rezerwacja / zakup szczenięcia</li>
+          <li><b>Bank</b> mBank</li>
+          <li><b>Numer rachunku</b> 88 1140 2004 0000 3002 7853 2630</li>
+          <li><b>Adres</b> Wzdół Rządowy 110, 26‑010 Bodzentyn</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <h2 class="section-title">Mapa dojazdu</h2>
+      <div class="panel">
+        <p>Aby otworzyć mapę w Google, kliknij: <a class="cta" href="https://maps.google.com/?q=Wzd%C3%B3%C5%82%20Rz%C4%85dowy%20110%2C%2026-010%20Bodzentyn" target="_blank" rel="noopener">Mapa dojazdu</a></p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">© <span id="y"></span> Psiakowo. Wszelkie prawa zastrzeżone.</div>
+  </footer>
+  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+</body>
+</html>
