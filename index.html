@@ -300,4 +300,143 @@
       <div class="contact-grid">
         <div class="panel">
           <ul class="list">
-            <li><b>Telefon</b> <a href="tel:+48661872192">+48 6
+            <li><b>Telefon</b> <a href="tel:+48661872192">+48 661 872 192</a></li>
+            <li><b>E-mail</b> <a href="mailto:hodowlapsiakowo@gmail.com">hodowlapsiakowo@gmail.com</a></li>
+            <li><b>Adres</b> Wzdół Rządowy 110, 26-010 Bodzentyn</li>
+            <li><b>NIP</b> 657-294-36-74</li>
+            <li><b>REGON</b> 382766750</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <form action="mailto:hodowlapsiakowo@gmail.com" method="post" enctype="text/plain">
+            <label>Imię i nazwisko<br><input required name="name" style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(148,163,184,.25); background:#0b1220; color:var(--text)" /></label>
+            <br><br>
+            <label>E-mail<br><input required type="email" name="email" style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(148,163,184,.25); background:#0b1220; color:var(--text)" /></label>
+            <br><br>
+            <label>Wiadomość<br><textarea required name="message" rows="5" style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(148,163,184,.25); background:#0b1220; color:var(--text)"></textarea></label>
+            <br><br>
+            <button class="cta" type="submit">Wyślij</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="platnosci">
+    <div class="container">
+      <h2 class="section-title">Dane do przelewu</h2>
+      <div class="panel">
+        <ul class="list">
+          <li><b>Odbiorca</b> Agnieszka Sikora</li>
+          <li><b>Tytuł</b> Rezerwacja / zakup szczenięcia</li>
+          <li><b>Bank</b> mBank</li>
+          <li><b>Numer rachunku</b> 88 1140 2004 0000 3002 7853 2630</li>
+          <li><b>Adres</b> Wzdół Rządowy 110, 26-010 Bodzentyn</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="mapa">
+    <div class="container">
+      <h2 class="section-title">Mapa dojazdu</h2>
+      <div class="panel">
+        <div class="stack">
+          <p class="lead" style="margin:0">Aby otworzyć mapę w Google, kliknij:</p>
+          <a class="cta" href="https://maps.google.com/?q=Wzd%C3%B3%C5%82%20Rz%C4%85dowy%20110%2C%2026-010%20Bodzentyn" target="_blank" rel="noopener">Mapa dojazdu</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">© <span id="y"></span> Psiakowo. Wszelkie prawa zastrzeżone.</div>
+  </footer>
+
+  <script>
+  document.getElementById('y').textContent = new Date().getFullYear();
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // 1) Dopasuj odsunięcie treści od stałego headera
+    const setHeaderH = () => {
+      const h = document.querySelector('header');
+      const hh = h ? Math.round(h.getBoundingClientRect().height) : 72;
+      document.documentElement.style.setProperty('--header-h', hh + 'px');
+      document.body.style.paddingTop = hh + 'px';
+    };
+    setHeaderH();
+    window.addEventListener('resize', setHeaderH);
+
+    // 2) Smooth scroll + zamykanie mobilnego menu po kliknięciu
+    const mobileMenu   = document.getElementById('mobileMenu');
+    const mobileToggle = document.getElementById('mobileToggle');
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', (e) => {
+        const href = a.getAttribute('href');
+        if (href === '#' || href === '#!') return;
+        const el = document.querySelector(href);
+        if (el) { e.preventDefault(); el.scrollIntoView({behavior:'smooth'}); }
+        if (mobileMenu?.classList.contains('open')) {
+          mobileMenu.classList.remove('open');
+          mobileToggle?.setAttribute('aria-expanded','false');
+          document.body.style.overflow = '';
+          setIcons(false);
+        }
+      });
+    });
+
+    // 3) Toggle mobilnego menu – TYLKO klasa .open (bez hidden)
+    const iconBurger = mobileToggle?.querySelector('.icon-burger');
+    const iconClose  = mobileToggle?.querySelector('.icon-close');
+    const setIcons = (open) => {
+      if(!iconBurger || !iconClose) return;
+      iconBurger.style.display = open ? 'none' : 'inline-flex';
+      iconClose.style.display  = open ? 'inline-flex' : 'none';
+    };
+
+    mobileToggle?.addEventListener('click', () => {
+      const willOpen = !mobileMenu.classList.contains('open');
+      mobileMenu.classList.toggle('open', willOpen);
+      mobileToggle.setAttribute('aria-expanded', String(willOpen));
+      document.body.style.overflow = willOpen ? 'hidden' : '';
+      setIcons(willOpen);
+    });
+
+    // 3.1) Zamknięcie na ESC i klik w tło
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
+        mobileMenu.classList.remove('open');
+        mobileToggle.setAttribute('aria-expanded','false');
+        document.body.style.overflow = '';
+        setIcons(false);
+      }
+    });
+    mobileMenu?.addEventListener('click', (e) => {
+      if (e.target === mobileMenu) {
+        mobileMenu.classList.remove('open');
+        mobileToggle.setAttribute('aria-expanded','false');
+        document.body.style.overflow = '';
+        setIcons(false);
+      }
+    });
+
+    // 4) Lightbox galerii
+    const overlay = document.createElement('dialog');
+    overlay.setAttribute('aria-label','Podgląd zdjęcia');
+    overlay.style.padding = 0; overlay.style.border = 'none'; overlay.style.background = 'transparent';
+    overlay.addEventListener('click', () => overlay.close());
+    const img = document.createElement('img');
+    img.style.maxWidth = 'min(92vw, 1200px)';
+    img.style.maxHeight = '85vh';
+    img.style.borderRadius = '14px';
+    overlay.appendChild(img);
+    document.body.appendChild(overlay);
+    document.querySelectorAll('.gallery a').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault(); img.src = link.href; overlay.showModal();
+      });
+    });
+  });
+  </script>
+</body>
+</html>
