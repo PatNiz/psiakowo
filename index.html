@@ -51,7 +51,7 @@
     .menu { display:flex; gap: 18px; flex-wrap: wrap; }
     .menu a { padding: 8px 12px; border-radius: 10px; color: var(--muted); font-weight: 600; }
     /* Mobile nav */
-    .hamburger{display:none; border:1px solid rgba(148,163,184,.25); background:rgba(148,163,184,.1); color:var(--text); padding:8px; border-radius:12px; font-weight:800; line-height:0; display:flex; align-items:center; justify-content:center; }
+    .hamburger{display:none; border:1px solid rgba(148,163,184,.25); background:rgba(148,163,184,.1); color:var(--text); padding:8px; border-radius:12px; font-weight:800; line-height:0; align-items:center; justify-content:center; }
     .mobile-menu{position:fixed; left:0; right:0; top:0; padding-top:var(--header-h,72px); background:rgba(11,18,32,.96); backdrop-filter:blur(8px); border-bottom:1px solid rgba(148,163,184,.15); display:none; z-index:10000}
     .mobile-menu.open{display:block}
     .mobile-menu .inner{max-width:1100px; margin:0 auto; padding:14px clamp(14px,4vw,24px) 18px; display:grid; gap:8px}
@@ -111,6 +111,11 @@
     }
     @media (max-width: 520px) {
       .menu { display:none; }
+      .hamburger{display:flex}
+      .gallery { grid-template-columns: repeat(2, 1fr); }
+      #mapa p { display:grid; gap:8px; }
+      #mapa .cta { display:block; width: fit-content; }
+    }
       .hamburger{display:flex}
       .gallery { grid-template-columns: repeat(2, 1fr); }
       /* container padding is already applied globally */
