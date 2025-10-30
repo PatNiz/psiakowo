@@ -39,8 +39,8 @@ document.addEventListener('DOMContentLoaded', () => {
             'contact_title':'Dane kontaktowe',
             'c_phone_b':'Telefon','c_mail_b':'E-mail','c_addr_b':'Adres','c_nip_b':'NIP','c_regon_b':'REGON',
             'f_name_l':'Imię i nazwisko','f_email_l':'E-mail','f_msg_l':'Wiadomość','f_submit':'Wyślij',
-            'gallery_mother':'Matka',
-            'gallery_father':'Tata',
+            'gallery_mother':'Matka Xoia',
+            'gallery_father':'Tata Max',
             'gallery_puppies':'Szczeniaki',
             'puppies_only_available':'Pokaż tylko dostępne',
             'status_available':'Dostępny/a',
@@ -89,8 +89,8 @@ document.addEventListener('DOMContentLoaded', () => {
             'c_phone_b':'Phone','c_mail_b':'Email','c_addr_b':'Address','c_nip_b':'Tax ID (NIP)','c_regon_b':'REGON',
             'f_name_l':'Full name','f_email_l':'Email','f_msg_l':'Message','f_submit':'Send',
             'bank_title':'Bank transfer details',
-            'gallery_mother':'Dam',
-            'gallery_father':'Sire',
+            'gallery_mother':'Dam Xoia',
+            'gallery_father':'Father Max',
             'gallery_puppies':'Puppies',
             'puppies_only_available':'Show available only',
             'status_available':'Available',
@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 'assets/szczeniaki/Red1.jpg',
                 'assets/szczeniaki/Red2.jpg'
             ]},
-        { id:'Y1', name:'Red', sex:'suka', status:'available', imgs:[
+        { id:'Y1', name:'Yellow', sex:'suka', status:'available', imgs:[
                 'assets/szczeniaki/Yellow1.jpg',
                 'assets/szczeniaki/Yellow2.jpg'
             ]}
