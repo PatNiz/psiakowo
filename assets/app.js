@@ -794,4 +794,72 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ===================== Puppies: filter + first render ===================== */
     document.getElementById('onlyAvailable')?.addEventListener('change', renderPuppies);
     renderPuppies();
+
+    function accordizeBreedCards(){
+        const wrap = document.querySelector('#orasie .cards');
+        if (!wrap) return;
+
+        const isMobile = window.matchMedia('(max-width: 640px)').matches;
+        wrap.classList.toggle('is-accordion', isMobile);
+
+        wrap.querySelectorAll('.card').forEach(card => {
+            const box = card.querySelector('.p');
+            if (!box) return;
+
+            if (isMobile) {
+                // już przetworzona?
+                if (box.dataset.accBuilt === '1') return;
+
+                // zapamiętaj oryginał (do przywrócenia na desktopie)
+                box.dataset.orig = box.innerHTML;
+
+                const pill = box.querySelector('.pill')?.outerHTML || '';
+                const h3   = box.querySelector('h3')?.innerHTML || '';
+
+                // zbierz wszystkie listy
+                const lists = Array.from(box.querySelectorAll('.list')).map(node => node.cloneNode(true));
+
+                // zbuduj <details>
+                const details = document.createElement('details');
+                details.className = 'breed-acc';
+
+                const summary = document.createElement('summary');
+                summary.innerHTML = `${pill}<span class="acc-title">${h3}</span>`;
+                details.appendChild(summary);
+
+                const body = document.createElement('div');
+                body.className = 'acc-body';
+                lists.forEach(l => body.appendChild(l));
+                details.appendChild(body);
+
+                // podmień zawartość karty
+                box.innerHTML = '';
+                box.appendChild(details);
+                box.dataset.accBuilt = '1';
+            } else {
+                // przywróć oryginał na desktopie
+                if (box.dataset.accBuilt === '1' && box.dataset.orig) {
+                    box.innerHTML = box.dataset.orig;
+                    delete box.dataset.accBuilt;
+                    delete box.dataset.orig;
+                }
+            }
+        });
+
+        // tylko jeden otwarty panel naraz
+        if (isMobile) {
+            wrap.addEventListener('toggle', (e) => {
+                const t = e.target;
+                if (t.tagName === 'DETAILS' && t.open) {
+                    wrap.querySelectorAll('details.breed-acc').forEach(d => {
+                        if (d !== t) d.open = false;
+                    });
+                }
+            }, { passive: true });
+        }
+    }
+
+    // start + reaguj na zmianę szerokości
+    accordizeBreedCards();
+    window.addEventListener('resize', accordizeBreedCards, { passive: true });
 });

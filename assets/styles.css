@@ -560,4 +560,59 @@ img{ cursor:zoom-in }
   #orasie .spec-grid{ grid-template-columns: 1fr; }
 }
 
+/* ===== O RASIE – akordeon tylko na mobile ===== */
+@media (max-width: 640px){
+  #orasie .cards{ grid-template-columns: 1fr !important; }
+
+  #orasie .cards.is-accordion .card{
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  #orasie .cards.is-accordion .card .p{ padding: 0; }
+
+  /* <details> jako panel */
+  #orasie .breed-acc{ border: 0; }
+  #orasie .breed-acc > summary{
+    display: flex; align-items: center; gap: 10px;
+    padding: 14px 16px;
+    cursor: pointer; list-style: none;
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+  }
+  #orasie .breed-acc > summary::-webkit-details-marker{ display:none; }
+
+  /* strzałka */
+  #orasie .breed-acc > summary::after{
+    content: "▾";
+    margin-left: auto; transform: rotate(-90deg);
+    transition: transform var(--anim-fast);
+    color: var(--muted);
+  }
+  #orasie .breed-acc[open] > summary::after{ transform: rotate(0deg); }
+
+  /* tytuł w summary */
+  #orasie .breed-acc .acc-title{
+    font-weight: 800; line-height: 1.2;
+  }
+  #orasie .breed-acc .pill{
+    border: 1px solid rgba(232,154,91,.25);
+    background: rgba(232,154,91,.10);
+  }
+
+  /* treść panelu */
+  #orasie .breed-acc .acc-body{
+    padding: 12px 16px 14px;
+    background: var(--panel);
+  }
+  #orasie .breed-acc .list{
+    margin: 0; padding: 0; list-style: none; display: grid; gap: 8px;
+  }
+  #orasie .breed-acc .list li{
+    display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start;
+  }
+  #orasie .breed-acc .list b{
+    min-width: 120px; color: var(--muted); font-weight: 600;
+  }
+}
 
