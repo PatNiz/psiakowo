@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if(!grid) return;
 
         const onlyAvail = document.getElementById('onlyAvailable')?.checked;
-        const list = puppiesData.filter(p => !onlyAvail || p.status === 'available');
+        const list = (Array.isArray(puppiesData) ? puppiesData : []).filter(p => !onlyAvail || p.status === 'available');
 
         const statusText  = (s) => ({
             available: t('status_available'),
@@ -166,119 +166,181 @@ document.addEventListener('DOMContentLoaded', () => {
 
         grid.innerHTML = list.map(p => {
             const sexLabel = p.sex === 'pies'
-                ? (currentLang === 'en' ? 'male'   : 'pies')
-                : (currentLang === 'en' ? 'female' : 'suka');
+                ? (typeof currentLang !== 'undefined' && currentLang === 'en' ? 'male'   : 'pies')
+                : (typeof currentLang !== 'undefined' && currentLang === 'en' ? 'female' : 'suka');
 
-            const hasMany = Array.isArray(p.imgs) && p.imgs.length > 1;
-            const src0 = (p.imgs && p.imgs[0]) || '';               // pierwsze zdjęcie
-            const srcsAttr = (p.imgs || []).join('|');              // zapis do data-*
-
-            const dots = (p.imgs || []).map((_,i)=>`<button class="puppy-dot${i===0?' active':''}" data-idx="${i}" aria-label="slide ${i+1}"></button>`).join('');
+            const imgs = Array.isArray(p.imgs) ? p.imgs.filter(Boolean) : (p.img ? [p.img] : []);
+            const hasMany = imgs.length > 1;
+            const src0 = imgs[0] || '';
+            const srcsAttr = imgs.join('|');
+            const dots = imgs.map((_,i)=>`<button class="puppy-dot${i===0?' active':''}" data-idx="${i}" aria-label="slide ${i+1}"></button>`).join('');
 
             return `
-      <article class="card puppy-card" data-id="${p.id}" data-status="${p.status}">
-        <div class="puppy-slider" data-srcs="${srcsAttr}" data-current="0">
-          <button class="puppy-prev" aria-label="Prev" ${hasMany?'':'hidden'}>‹</button>
-          <a class="puppy-link" href="${src0}">
-            <img class="puppy-img" loading="lazy" src="${src0}" alt="Szczeniak ${p.name} — ${sexLabel}">
-          </a>
-          <button class="puppy-next" aria-label="Next" ${hasMany?'':'hidden'}>›</button>
-          <div class="puppy-dots" ${hasMany?'':'hidden'}>${dots}</div>
-        </div>
-
-        <div class="p">
-          <div class="puppy-meta">
-            <div class="puppy-name">${p.name} <span style="color:var(--muted); font-weight:600">• ${sexLabel}</span></div>
-            <span class="status-pill status-${p.status}">${statusText(p.status)}</span>
-          </div>
-        </div>
-      </article>
-    `;
+  <article class="card puppy-card" data-id="${p.id || ''}" data-status="${p.status || ''}">
+    <div class="puppy-slider" data-srcs="${srcsAttr}" data-current="0">
+      <a class="puppy-link" href="${src0}">
+        <img class="puppy-img" loading="lazy" src="${src0}" alt="Szczeniak ${p.name || ''} — ${sexLabel}">
+      </a>
+      <button class="puppy-prev" aria-label="Prev" ${hasMany?'':'hidden'}>‹</button>
+      <button class="puppy-next" aria-label="Next" ${hasMany?'':'hidden'}>›</button>
+      <div class="puppy-dots" ${hasMany?'':'hidden'}>${dots}</div>
+    </div>
+    <div class="p">
+      <div class="puppy-meta">
+        <div class="puppy-name">${p.name || ''} <span style="color:var(--muted); font-weight:600">• ${sexLabel}</span></div>
+        <span class="status-pill status-${p.status}">${statusText(p.status)}</span>
+      </div>
+    </div>
+  </article>
+`;
         }).join('');
 
-        // ============ logika karuzeli + podpięcie lightboxa ============
-        const sliders = grid.querySelectorAll('.puppy-slider');
-
+        // helper do zmiany slajdu
         const showSlide = (slider, idx) => {
             const srcs = (slider.dataset.srcs || '').split('|').filter(Boolean);
             if (!srcs.length) return;
             const n = srcs.length;
-            const newIdx = ((idx % n) + n) % n; // zawijanie
+            const newIdx = ((idx % n) + n) % n;
 
             const imgEl = slider.querySelector('.puppy-img');
             const linkEl = slider.querySelector('.puppy-link');
-            imgEl.src = srcs[newIdx];
-            linkEl.href = srcs[newIdx];
+            if (imgEl) imgEl.src = srcs[newIdx];
+            if (linkEl) linkEl.href = srcs[newIdx];
             slider.dataset.current = String(newIdx);
 
-            // dots
             slider.querySelectorAll('.puppy-dot').forEach((d,i)=>{
                 d.classList.toggle('active', i===newIdx);
             });
         };
 
+        // lightbox „open” (jeśli masz openLightbox) + fallback
+        const overlay = document.querySelector('dialog');
+        const lbImg = overlay?.querySelector('img');
+        const openLB = (src) => {
+            if (typeof openLightbox === 'function') {
+                openLightbox(src);
+            } else if (overlay && lbImg) {
+                lbImg.src = src;
+                overlay.showModal();
+            } else {
+                // ostateczny fallback: otwórz obrazek w nowej karcie
+                window.open(src, '_blank', 'noopener');
+            }
+        };
+
+        // podpięcie zachowań do każdej karuzeli
+        const sliders = grid.querySelectorAll('.puppy-slider');
         sliders.forEach(slider => {
             const srcs = (slider.dataset.srcs || '').split('|').filter(Boolean);
             if (!srcs.length) return;
 
-            // przyciski
             const prev = slider.querySelector('.puppy-prev');
             const next = slider.querySelector('.puppy-next');
+            const area = slider.querySelector('.puppy-link');
+            const imgEl = slider.querySelector('.puppy-img');
+            const show = (i) => showSlide(slider, i);
 
-            prev?.addEventListener('click', (e)=>{ e.preventDefault(); showSlide(slider, Number(slider.dataset.current||0)-1); });
-            next?.addEventListener('click', (e)=>{ e.preventDefault(); showSlide(slider, Number(slider.dataset.current||0)+1); });
+            // przyciski
+            prev?.addEventListener('click', (e)=>{ e.preventDefault(); show(Number(slider.dataset.current||0)-1); });
+            next?.addEventListener('click', (e)=>{ e.preventDefault(); show(Number(slider.dataset.current||0)+1); });
 
             // kropki
             slider.querySelectorAll('.puppy-dot').forEach(dot=>{
                 dot.addEventListener('click', (e)=>{
                     e.preventDefault();
-                    const i = Number(dot.dataset.idx||0);
-                    showSlide(slider, i);
+                    show(Number(dot.dataset.idx||0));
                 });
             });
 
-            // gest przesunięcia (touch)
-            let startX = 0, dx = 0, touching = false;
-            const area = slider.querySelector('.puppy-link'); // gesty na obrazie
-            area?.addEventListener('touchstart', (e)=>{ touching = true; startX = e.touches[0].clientX; dx = 0; }, {passive:true});
-            area?.addEventListener('touchmove',  (e)=>{ if(!touching) return; dx = e.touches[0].clientX - startX; }, {passive:true});
-            area?.addEventListener('touchend',   ()=>{
-                if(!touching) return;
-                touching = false;
-                if (Math.abs(dx) > 40) {
-                    const dir = dx<0 ? +1 : -1;
-                    showSlide(slider, Number(slider.dataset.current||0)+dir);
-                }
-            }, {passive:true});
+            // === DRAG: pointer events (mysz + dotyk) ===
+            let startX = 0, dx = 0, dragging = false, suppressClick = false;
+            const THRESH = 40; // próg zmiany slajdu
 
-            // klawiatura (focus na linku)
+            const onPointerDown = (e) => {
+                e.preventDefault(); // ważne: blokuje natywny drag/klik
+                dragging = true;
+                dx = 0;
+                startX = e.clientX ?? (e.touches?.[0]?.clientX) ?? 0;
+                slider.classList.add('dragging');
+                area?.setPointerCapture?.(e.pointerId ?? 0);
+                if (imgEl) imgEl.draggable = false;
+            };
+
+            const onPointerMove = (e) => {
+                if (!dragging) return;
+                const x = e.clientX ?? (e.touches?.[0]?.clientX) ?? startX;
+                dx = x - startX;
+            };
+
+            const onPointerUp = (e) => {
+                if (!dragging) return;
+                dragging = false;
+                slider.classList.remove('dragging');
+
+                if (Math.abs(dx) > THRESH) {
+                    const dir = dx < 0 ? +1 : -1; // w lewo -> następny; w prawo -> poprzedni
+                    show(Number(slider.dataset.current||0) + dir);
+                    suppressClick = true; // nie otwieraj lightboxa po dragu
+                    setTimeout(()=> suppressClick = false, 120);
+                }
+
+                dx = 0;
+                try { area?.releasePointerCapture?.(e.pointerId ?? 0); } catch(_){}
+            };
+
+            area?.addEventListener('pointerdown', onPointerDown, { passive:false });
+            area?.addEventListener('pointermove', onPointerMove,  { passive:false });
+            area?.addEventListener('pointerup',   onPointerUp,    { passive:false });
+            area?.addEventListener('pointercancel', onPointerUp,  { passive:false });
+            area?.addEventListener('pointerleave',  (e)=>{ if (dragging) onPointerUp(e); }, { passive:false });
+
+            // jeśli to był drag, zablokuj klik (lightbox)
+            area?.addEventListener('click', (e) => {
+                if (suppressClick) { e.preventDefault(); e.stopPropagation(); }
+                else {
+                    // zwykły klik — otwórz lightbox
+                    const href = area.getAttribute('href') || '';
+                    if (/\.(avif|webp|jpe?g|png|gif|bmp|webm|svg)(\?.*)?$/i.test(href)) {
+                        e.preventDefault();
+                        openLB(href);
+                    }
+                }
+            }, true);
+
+            // === Wheel / trackpad ===
+            let wheelLock = false;
+            const onWheel = (e) => {
+                if (document.documentElement.classList.contains('lb-open')) return;
+                if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+                if (wheelLock) return;
+
+                const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+                if (Math.abs(delta) < 10) return;
+
+                e.preventDefault();
+                wheelLock = true;
+                const dir = delta > 0 ? +1 : -1;
+                show(Number(slider.dataset.current||0) + dir);
+                setTimeout(()=> wheelLock = false, 220);
+            };
+            slider.addEventListener('wheel', onWheel, { passive:false });
+
+            // klawiatura
             area?.addEventListener('keydown', (e)=>{
-                if (e.key === 'ArrowLeft')  { e.preventDefault(); showSlide(slider, Number(slider.dataset.current||0)-1); }
-                if (e.key === 'ArrowRight') { e.preventDefault(); showSlide(slider, Number(slider.dataset.current||0)+1); }
+                if (e.key === 'ArrowLeft')  { e.preventDefault(); show(Number(slider.dataset.current||0)-1); }
+                if (e.key === 'ArrowRight') { e.preventDefault(); show(Number(slider.dataset.current||0)+1); }
             });
 
-            // start (gdyby domyślnie nie był indeks 0)
-            showSlide(slider, Number(slider.dataset.current||0));
+            // start
+            show(Number(slider.dataset.current||0));
         });
 
-        // lightbox dla świeżych <a> (używa Twojego <dialog>)
-        try {
-            const overlay = document.querySelector('dialog');
-            const lbImg = overlay?.querySelector('img');
-            grid.querySelectorAll('.puppy-link').forEach(link => {
-                link.addEventListener('click', (e) => {
-                    const href = link.getAttribute('href') || '';
-                    const isImg = /\.(avif|webp|jpe?g|png|gif|bmp|webm|svg)(\?.*)?$/i.test(href);
-                    if (!isImg) return;
-                    if (overlay && lbImg) {
-                        e.preventDefault();
-                        lbImg.src = href;
-                        overlay.showModal();
-                    }
-                });
-            });
-        } catch(_) {}
+        // UWAGA: żeby drag był gładki na mobile i nie kolidował z pionowym scrollowaniem,
+        // dodaj w CSS:
+        // .puppy-slider { touch-action: pan-y; }
+        // .puppy-slider, .puppy-slider img { user-select:none; -webkit-user-drag:none; }
     }
+
 
     /* ===================== Language apply ===================== */
     function applyLang(lang){
@@ -542,7 +604,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // 5) Subtle tilt on cards/features
-    const tiltables = document.querySelectorAll('.card, .feature');
+    const tiltables = document.querySelectorAll('.card:not(.puppy-card), .feature');
+
     if (!prefersReduced) {
         tiltables.forEach(el => {
             el.addEventListener('mousemove', (e) => {
