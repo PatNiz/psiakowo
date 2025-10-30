@@ -363,3 +363,201 @@ img{ cursor:zoom-in }
   cursor: grabbing;
 }
 .puppy-prev, .puppy-next { z-index: 2; }
+
+
+
+
+
+/* ===================== O RASIE – stylizacja sekcji ===================== */
+#orasie { position: relative; }
+
+/* Sekcje/panele w tej części */
+#orasie .panel{
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--panel);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Nagłówki bloków */
+#orasie .section-title{
+  margin-bottom: 18px;
+}
+
+/* Karty w siatce: 3 kolumny desktop, 2 tablet, 1 mobile */
+#orasie .cards{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  perspective: none;           /* bez tiltów */
+}
+#orasie .card{
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--panel);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--anim-fast), transform var(--anim-fast), border-color var(--anim-fast);
+}
+#orasie .card:hover{
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: rgba(232,154,91,.22); /* lekki akcent */
+}
+#orasie .card .p{ padding: 16px 16px 14px; }
+
+/* Paski tytułowe (pill) – lekko cieplejsze */
+#orasie .pill{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  letter-spacing: .3px;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(232,154,91,.25);
+  background: rgba(232,154,91,.10);
+}
+
+/* Podtytuły kart */
+#orasie .card h3{
+  margin: 10px 0 8px;
+  font-size: 18px;
+  line-height: 1.25;
+}
+
+/* Listy: czytelne, zwiewne, z własnym znacznikiem */
+#orasie .list{
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+#orasie .list li{
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px;
+  align-items: start;
+}
+#orasie .list b{
+  min-width: 92px;             /* trochę węższe niż globalne */
+  color: var(--muted);
+  font-weight: 600;
+}
+#orasie .list li:not(:has(b)) { /* proste listy bez labela po lewej */
+  grid-template-columns: 1fr;
+  position: relative;
+  padding-left: 20px;
+}
+#orasie .list li:not(:has(b))::before{
+  content: "";
+  position: absolute;
+  left: 4px; top: .6em;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--accent-3);
+  box-shadow: 0 0 0 2px rgba(232,154,91,.15);
+}
+
+/* FAQ – details/summary */
+#orasie details{
+  border-top: 1px solid var(--border);
+  padding: 10px 0;
+}
+#orasie details:first-of-type{
+  border-top: none;
+  padding-top: 0;
+}
+#orasie summary{
+  cursor: pointer;
+  list-style: none; /* Safari */
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 2px;
+  border-radius: 10px;
+  transition: background var(--anim-fast);
+}
+#orasie summary::-webkit-details-marker{ display:none; }
+#orasie summary:hover{ background: rgba(15,23,42,.04); }
+#orasie summary::before{
+  content: "▸";
+  font-size: 14px;
+  transform: translateY(1px);
+  transition: transform var(--anim-fast);
+  color: var(--muted);
+}
+#orasie details[open] summary::before{
+  transform: rotate(90deg);
+}
+#orasie details p{
+  margin: 6px 0 4px;
+  color: var(--muted);
+}
+
+/* Intro panel – większa czytelność */
+#orasie .panel .lead{
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+/* Delikatna „linia akcentowa” na górze sekcji (opcjonalnie) */
+
+
+/* Responsywność sekcji „O rasie” */
+@media (max-width: 1024px){
+  #orasie .cards{ grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px){
+  #orasie .cards{ grid-template-columns: 1fr; }
+  #orasie .list b{ min-width: 80px; }
+  #orasie summary{ padding: 10px 0; }
+}
+
+
+/* ===== O RASIE: tabela/specyfikacja ===== */
+#orasie .breed-specs { margin-top: 18px; }
+#orasie .breed-specs .note{
+  margin-top: 10px; color: var(--muted); font-size: 14px;
+}
+
+#orasie .spec-grid{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px 16px;
+  margin: 0;
+}
+
+#orasie .spec-grid > div{
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--panel);
+  padding: 12px 14px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--anim-fast), transform var(--anim-fast), border-color var(--anim-fast);
+}
+#orasie .spec-grid > div:hover{
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: rgba(232,154,91,.18);
+}
+
+#orasie .spec-grid dt{
+  font-size: 12px; text-transform: uppercase; letter-spacing: .3px;
+  color: var(--muted); margin: 0 0 6px;
+}
+#orasie .spec-grid dd{
+  margin: 0; color: var(--text); font-weight: 600; line-height: 1.5;
+}
+
+/* responsywność */
+@media (max-width: 1024px){
+  #orasie .spec-grid{ grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px){
+  #orasie .spec-grid{ grid-template-columns: 1fr; }
+}
+
+
