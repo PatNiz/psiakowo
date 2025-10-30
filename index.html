@@ -140,18 +140,40 @@
     </section>
 
     <section id="galeria">
-      <div class="container">
-        <h2 class="section-title" data-i18n="gallery_title">Galeria zdjęć</h2>
-        <div class="gallery">
-          <a href="assets/galeria/1.jpg"><img loading="lazy" src="assets/galeria/1.jpg" alt="Mastif pirenejski – profil"></a>
-		  <a href="assets/galeria/2.jpg"><img loading="lazy" src="assets/galeria/2.jpg" alt="Mastif pirenejski – profil"></a>
-		  <a href="assets/galeria/3.jpg"><img loading="lazy" src="assets/galeria/3.jpg" alt="Mastif pirenejski – profil"></a>
-		  <a href="assets/galeria/4.jpg"><img loading="lazy" src="assets/galeria/4.jpg" alt="Mastif pirenejski – profil"></a>
-		  <a href="assets/galeria/5.jpg"><img loading="lazy" src="assets/galeria/5.jpg" alt="Mastif pirenejski – profil"></a>
-		  <a href="assets/galeria/6.jpg"><img loading="lazy" src="assets/galeria/6.jpg" alt="Mastif pirenejski – profil"></a>
-        </div>
-      </div>
-    </section>
+  <div class="container">
+    <h2 class="section-title" data-i18n="gallery_title">Galeria zdjęć</h2>
+
+    <!-- MATKA -->
+    <h3 style="margin:18px 0 12px" data-i18n="gallery_mother">Matka</h3>
+    <div class="gallery">
+      <!-- podmień ścieżki na swoje -->
+      <a href="assets/matka/1.jpg"><img loading="lazy" src="assets/matka/1.jpg" alt="Matka — portret"></a>
+      <a href="assets/matka/2.jpg"><img loading="lazy" src="assets/matka/2.jpg" alt="Matka — na spacerze"></a>
+    </div>
+
+    <!-- TATA -->
+    <h3 style="margin:28px 0 12px" data-i18n="gallery_father">Tata</h3>
+    <div class="gallery">
+      <!-- podmień ścieżki na swoje -->
+      <a href="assets/tata/1.jpg"><img loading="lazy" src="assets/tata/1.jpg" alt="Tata — portret"></a>
+      <a href="assets/tata/2.jpg"><img loading="lazy" src="assets/tata/2.jpg" alt="Tata — w ruchu"></a>
+    </div>
+
+    <!-- SZCZENIAKI -->
+    <h3 style="margin:28px 0 12px" data-i18n="gallery_puppies">Szczeniaki</h3>
+
+    <!-- pasek filtrów -->
+    <div class="puppy-toolbar" style="display:flex; align-items:center; gap:12px; margin-bottom:12px">
+      <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+        <input id="onlyAvailable" type="checkbox" />
+        <span data-i18n="puppies_only_available">Pokaż tylko dostępne</span>
+      </label>
+    </div>
+
+    <!-- tutaj wstrzykujemy karty szczeniąt -->
+    <div id="puppiesGrid" class="cards"></div>
+  </div>
+</section>>
 
     <section>
       <div class="container">
