@@ -422,3 +422,19 @@ img { cursor: zoom-in; }
   cursor:pointer;
 }
 .puppy-dot.active{ background: rgba(232,154,91,.95); }
+
+
+dialog::backdrop{
+  backdrop-filter: blur(8px) saturate(1.05);
+  background: rgba(15,23,42,.35);
+  transition: backdrop-filter .25s ease, background .25s ease;
+}
+
+/* Fallback: kiedy dodamy klasę na <html>, rozmyj całą stronę poza dialogiem */
+html.lb-open body > *:not(dialog){
+  filter: blur(8px) saturate(1.05);
+  transition: filter .25s ease;
+}
+
+/* zapobiegnij „ostrzeniu” elementów nad dialogiem */
+html.lb-open { overflow: hidden; }

@@ -406,6 +406,17 @@ document.addEventListener('DOMContentLoaded', () => {
     overlay.appendChild(lbImg);
     document.body.appendChild(overlay);
 
+    const openLightbox = (src) => {
+        lbImg.src = src;
+        document.documentElement.classList.add('lb-open');
+        overlay.showModal();
+    };
+
+
+    overlay.addEventListener('close', () => {
+        document.documentElement.classList.remove('lb-open');
+    });
+
     // LIGHTBOX dla wszystkich obrazów na stronie
     (function bindLightboxForAllImages(){
         // 1) Klik na <a> z obrazkiem (preferowane źródło: href)
@@ -417,8 +428,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 e.preventDefault();
                 const img = link.querySelector('img');
                 const full = img?.dataset?.full || href; // preferuj data-full, jak masz miniatury
-                lbImg.src = full;
-                overlay.showModal();
+                openLightbox(full);
             });
         });
 
@@ -430,15 +440,13 @@ document.addEventListener('DOMContentLoaded', () => {
             img.setAttribute('tabindex', '0');
             img.addEventListener('click', () => {
                 const full = img.dataset?.full || img.currentSrc || img.src;
-                lbImg.src = full;
-                overlay.showModal();
+                openLightbox(full);
             });
             img.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
                     const full = img.dataset?.full || img.currentSrc || img.src;
-                    lbImg.src = full;
-                    overlay.showModal();
+                    openLightbox(full);
                 }
             });
         });
