@@ -399,3 +399,67 @@ document.addEventListener('DOMContentLoaded', () => {
   
   
 });
+
+// ====== DANE SZCZENIĄT (EDYTUJ) ======
+const puppiesData = [
+  { id:'M1', name:'M1', sex:'pies', status:'available', img:'assets/szczeniaki/m1.jpg' },
+  { id:'M2', name:'M2', sex:'pies', status:'reserved',  img:'assets/szczeniaki/m2.jpg' },
+  { id:'F1', name:'F1', sex:'suka', status:'sold',      img:'assets/szczeniaki/f1.jpg' },
+  { id:'F2', name:'F2', sex:'suka', status:'available', img:'assets/szczeniaki/f2.jpg' },
+];
+
+// pomocnicze tłumaczenie w runtime
+const t = (key) => (dict[currentLang] && dict[currentLang][key]) || key;
+
+// główny render „Szczeniąt”
+function renderPuppies(){
+  const grid = document.getElementById('puppiesGrid');
+  if(!grid) return;
+
+  const onlyAvail = document.getElementById('onlyAvailable')?.checked;
+  const list = puppiesData.filter(p => !onlyAvail || p.status === 'available');
+
+  const statusClass = (s) => `status-pill status-${s}`;
+  const statusText  = (s) => ({
+    'available': t('status_available'),
+    'reserved' : t('status_reserved'),
+    'sold'     : t('status_sold')
+  }[s] || s);
+
+  grid.innerHTML = list.map(p => {
+    const sexLabel = p.sex === 'pies' ? (currentLang === 'en' ? 'male' : 'pies')
+                                      : (currentLang === 'en' ? 'female' : 'suka');
+    return `
+      <article class="card puppy-card" data-id="${p.id}" data-status="${p.status}"
+        aria-label="Szczeniak ${p.name} — ${sexLabel}, status: ${statusText(p.status)}">
+        <a href="${p.img}">
+          <img loading="lazy" src="${p.img}" alt="Szczeniak ${p.name} — ${sexLabel}">
+        </a>
+        <div class="p">
+          <div class="puppy-meta">
+            <div class="puppy-name">${p.name} <span style="color:var(--muted); font-weight:600">• ${sexLabel}</span></div>
+            <span class="${statusClass(p.status)}">${statusText(p.status)}</span>
+          </div>
+        </div>
+      </article>
+    `;
+  }).join('');
+
+  // lightbox już masz globalny – tylko podpinamy kliknięcia dla świeżo wstrzykniętych <a>
+  try {
+    const overlay = document.querySelector('dialog');
+    const lbImg = overlay?.querySelector('img');
+    document.querySelectorAll('#puppiesGrid a').forEach(link => {
+      link.addEventListener('click', (e) => {
+        const href = link.getAttribute('href') || '';
+        const isImg = /\.(avif|webp|jpe?g|png|gif|bmp|webm|svg)(\?.*)?$/i.test(href);
+        if (!isImg) return;
+        if (overlay && lbImg) {
+          e.preventDefault();
+          lbImg.src = href;
+          overlay.showModal();
+        }
+      });
+    });
+  } catch(_){}
+}
