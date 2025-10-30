@@ -113,10 +113,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* ===================== Puppies data + renderer ===================== */
     const puppiesData = [
-        { id:'M1', name:'M1', sex:'pies', status:'available', img:'assets/szczeniaki/m1.jpg' },
-        { id:'M2', name:'M2', sex:'pies', status:'reserved',  img:'assets/szczeniaki/m2.jpg' },
-        { id:'F1', name:'F1', sex:'suka', status:'sold',      img:'assets/szczeniaki/f1.jpg' },
-        { id:'F2', name:'F2', sex:'suka', status:'available', img:'assets/szczeniaki/f2.jpg' },
+        { id:'B1', name:'Black', sex:'pies', status:'available', imgs:[
+                'assets/szczeniaki/Black1.jpg',
+                'assets/szczeniaki/Black2.jpg'
+            ]},
+        { id:'B2', name:'Blue', sex:'pies', status:'reserved', imgs:[
+                'assets/szczeniaki/Blue1.jpg',
+                'assets/szczeniaki/Blue2.jpg'
+            ]},
+        { id:'G1', name:'Green', sex:'suka', status:'available', imgs:[
+                'assets/szczeniaki/Green1.jpg',
+                'assets/szczeniaki/Green2.jpg'
+            ]},
+        { id:'LB1', name:'Light Blue', sex:'suka', status:'available', imgs:[
+                'assets/szczeniaki/LightBlue1.jpg',
+                'assets/szczeniaki/LightBlue2.jpg'
+            ]},
+        { id:'O1', name:'Orange', sex:'suka', status:'available', imgs:[
+                'assets/szczeniaki/Orange1.jpg',
+                'assets/szczeniaki/Orange2.jpg'
+            ]},
+        { id:'P1', name:'Pink', sex:'suka', status:'available', imgs:[
+                'assets/szczeniaki/Pink1.jpg',
+                'assets/szczeniaki/Pink2.jpg'
+            ]},
+        { id:'P1', name:'Red', sex:'suka', status:'available', imgs:[
+                'assets/szczeniaki/Red1.jpg',
+                'assets/szczeniaki/Red2.jpg'
+            ]},
+        { id:'Y1', name:'Red', sex:'suka', status:'available', imgs:[
+                'assets/szczeniaki/Yellow1.jpg',
+                'assets/szczeniaki/Yellow2.jpg'
+            ]}
     ];
 
     let currentLang;
@@ -140,27 +168,104 @@ document.addEventListener('DOMContentLoaded', () => {
             const sexLabel = p.sex === 'pies'
                 ? (currentLang === 'en' ? 'male'   : 'pies')
                 : (currentLang === 'en' ? 'female' : 'suka');
+
+            const hasMany = Array.isArray(p.imgs) && p.imgs.length > 1;
+            const src0 = (p.imgs && p.imgs[0]) || '';               // pierwsze zdjęcie
+            const srcsAttr = (p.imgs || []).join('|');              // zapis do data-*
+
+            const dots = (p.imgs || []).map((_,i)=>`<button class="puppy-dot${i===0?' active':''}" data-idx="${i}" aria-label="slide ${i+1}"></button>`).join('');
+
             return `
-        <article class="card puppy-card" data-id="${p.id}" data-status="${p.status}"
-          aria-label="Szczeniak ${p.name} — ${sexLabel}, status: ${statusText(p.status)}">
-          <a href="${p.img}">
-            <img loading="lazy" src="${p.img}" alt="Szczeniak ${p.name} — ${sexLabel}">
+      <article class="card puppy-card" data-id="${p.id}" data-status="${p.status}">
+        <div class="puppy-slider" data-srcs="${srcsAttr}" data-current="0">
+          <button class="puppy-prev" aria-label="Prev" ${hasMany?'':'hidden'}>‹</button>
+          <a class="puppy-link" href="${src0}">
+            <img class="puppy-img" loading="lazy" src="${src0}" alt="Szczeniak ${p.name} — ${sexLabel}">
           </a>
-          <div class="p">
-            <div class="puppy-meta">
-              <div class="puppy-name">${p.name} <span style="color:var(--muted); font-weight:600">• ${sexLabel}</span></div>
-              <span class="status-pill status-${p.status}">${statusText(p.status)}</span>
-            </div>
+          <button class="puppy-next" aria-label="Next" ${hasMany?'':'hidden'}>›</button>
+          <div class="puppy-dots" ${hasMany?'':'hidden'}>${dots}</div>
+        </div>
+
+        <div class="p">
+          <div class="puppy-meta">
+            <div class="puppy-name">${p.name} <span style="color:var(--muted); font-weight:600">• ${sexLabel}</span></div>
+            <span class="status-pill status-${p.status}">${statusText(p.status)}</span>
           </div>
-        </article>
-      `;
+        </div>
+      </article>
+    `;
         }).join('');
 
-        // podpinamy lightbox do świeżych <a>
+        // ============ logika karuzeli + podpięcie lightboxa ============
+        const sliders = grid.querySelectorAll('.puppy-slider');
+
+        const showSlide = (slider, idx) => {
+            const srcs = (slider.dataset.srcs || '').split('|').filter(Boolean);
+            if (!srcs.length) return;
+            const n = srcs.length;
+            const newIdx = ((idx % n) + n) % n; // zawijanie
+
+            const imgEl = slider.querySelector('.puppy-img');
+            const linkEl = slider.querySelector('.puppy-link');
+            imgEl.src = srcs[newIdx];
+            linkEl.href = srcs[newIdx];
+            slider.dataset.current = String(newIdx);
+
+            // dots
+            slider.querySelectorAll('.puppy-dot').forEach((d,i)=>{
+                d.classList.toggle('active', i===newIdx);
+            });
+        };
+
+        sliders.forEach(slider => {
+            const srcs = (slider.dataset.srcs || '').split('|').filter(Boolean);
+            if (!srcs.length) return;
+
+            // przyciski
+            const prev = slider.querySelector('.puppy-prev');
+            const next = slider.querySelector('.puppy-next');
+
+            prev?.addEventListener('click', (e)=>{ e.preventDefault(); showSlide(slider, Number(slider.dataset.current||0)-1); });
+            next?.addEventListener('click', (e)=>{ e.preventDefault(); showSlide(slider, Number(slider.dataset.current||0)+1); });
+
+            // kropki
+            slider.querySelectorAll('.puppy-dot').forEach(dot=>{
+                dot.addEventListener('click', (e)=>{
+                    e.preventDefault();
+                    const i = Number(dot.dataset.idx||0);
+                    showSlide(slider, i);
+                });
+            });
+
+            // gest przesunięcia (touch)
+            let startX = 0, dx = 0, touching = false;
+            const area = slider.querySelector('.puppy-link'); // gesty na obrazie
+            area?.addEventListener('touchstart', (e)=>{ touching = true; startX = e.touches[0].clientX; dx = 0; }, {passive:true});
+            area?.addEventListener('touchmove',  (e)=>{ if(!touching) return; dx = e.touches[0].clientX - startX; }, {passive:true});
+            area?.addEventListener('touchend',   ()=>{
+                if(!touching) return;
+                touching = false;
+                if (Math.abs(dx) > 40) {
+                    const dir = dx<0 ? +1 : -1;
+                    showSlide(slider, Number(slider.dataset.current||0)+dir);
+                }
+            }, {passive:true});
+
+            // klawiatura (focus na linku)
+            area?.addEventListener('keydown', (e)=>{
+                if (e.key === 'ArrowLeft')  { e.preventDefault(); showSlide(slider, Number(slider.dataset.current||0)-1); }
+                if (e.key === 'ArrowRight') { e.preventDefault(); showSlide(slider, Number(slider.dataset.current||0)+1); }
+            });
+
+            // start (gdyby domyślnie nie był indeks 0)
+            showSlide(slider, Number(slider.dataset.current||0));
+        });
+
+        // lightbox dla świeżych <a> (używa Twojego <dialog>)
         try {
             const overlay = document.querySelector('dialog');
             const lbImg = overlay?.querySelector('img');
-            document.querySelectorAll('#puppiesGrid a').forEach(link => {
+            grid.querySelectorAll('.puppy-link').forEach(link => {
                 link.addEventListener('click', (e) => {
                     const href = link.getAttribute('href') || '';
                     const isImg = /\.(avif|webp|jpe?g|png|gif|bmp|webm|svg)(\?.*)?$/i.test(href);

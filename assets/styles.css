@@ -261,7 +261,7 @@ section .section-title { animation: fadeUp var(--anim-slow) both; }
   padding: 6px 10px;
   border: 1px solid #b88a4a;
   color: #3b2a0f; /* bardzo ciemny brąz — wysoki kontrast */
-  background: #fffff; /* jasny, ciepły beż */
+  background: #ffffff; /* jasny, ciepły beż */
   border-radius: 999px;
   font-weight: 700;
   box-shadow: var(--shadow-sm);
@@ -386,3 +386,39 @@ img { cursor: zoom-in; }
 .status-available{ color:#166534; background:rgba(34,197,94,.12); border-color:rgba(34,197,94,.25); }
 .status-reserved{  color:#7c2d12; background:rgba(251,146,60,.15); border-color:rgba(251,146,60,.28); }
 .status-sold{      color:#1f2937; background:rgba(148,163,184,.18); border-color:rgba(148,163,184,.28); }
+
+
+/* ===== Mini-karuzela w kartach szczeniąt ===== */
+.puppy-slider{
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.puppy-prev, .puppy-next{
+  position:absolute; top:50%; transform: translateY(-50%);
+  display:grid; place-items:center;
+  width:36px; height:36px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  background: rgba(255,255,255,.85);
+  color: var(--text);
+  font-size:20px; font-weight:800;
+  box-shadow: var(--shadow-sm);
+  cursor:pointer;
+}
+.puppy-prev{ left:8px; }
+.puppy-next{ right:8px; }
+.puppy-prev:hover, .puppy-next:hover{ filter: saturate(1.05); box-shadow: var(--shadow-md); }
+
+.puppy-dots{
+  position:absolute; left:0; right:0; bottom:8px;
+  display:flex; justify-content:center; gap:6px;
+}
+.puppy-dot{
+  width:8px; height:8px; border-radius:999px; border:none;
+  background: rgba(15,23,42,.25);
+  box-shadow: var(--shadow-sm);
+  cursor:pointer;
+}
+.puppy-dot.active{ background: rgba(232,154,91,.95); }
