@@ -134,6 +134,9 @@ document.addEventListener('DOMContentLoaded', () => {
     setBtn(langBtn, lang);
     setBtn(langBtnM, lang);
 
+    // po podmianie tekstów odśwież karty szczeniąt (żeby statusy/etykiety były w dobrym języku)
+renderPuppies();
+    
     try { localStorage.setItem('lang', lang); } catch(e){}
   }
 
