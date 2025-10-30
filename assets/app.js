@@ -795,6 +795,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('onlyAvailable')?.addEventListener('change', renderPuppies);
     renderPuppies();
 
+    /* ===== O RASIE – akordeon kart na mobile (z i18n) ===== */
     function accordizeBreedCards(){
         const wrap = document.querySelector('#orasie .cards');
         if (!wrap) return;
@@ -807,24 +808,37 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!box) return;
 
             if (isMobile) {
-                // już przetworzona?
                 if (box.dataset.accBuilt === '1') return;
 
-                // zapamiętaj oryginał (do przywrócenia na desktopie)
+                // zapamiętaj oryginał dla desktopu
                 box.dataset.orig = box.innerHTML;
 
-                const pill = box.querySelector('.pill')?.outerHTML || '';
-                const h3   = box.querySelector('h3')?.innerHTML || '';
+                const pillEl = box.querySelector('.pill');
+                const pillHTML = pillEl ? pillEl.outerHTML : '';
 
-                // zbierz wszystkie listy
+                const h3 = box.querySelector('h3');
+                const h3Key = h3?.getAttribute('data-i18n') || '';
+                const h3Text = h3?.textContent?.trim() || '';
+
+                // zduplikuj listy
                 const lists = Array.from(box.querySelectorAll('.list')).map(node => node.cloneNode(true));
 
-                // zbuduj <details>
+                // budujemy <details>
                 const details = document.createElement('details');
                 details.className = 'breed-acc';
 
                 const summary = document.createElement('summary');
-                summary.innerHTML = `${pill}<span class="acc-title">${h3}</span>`;
+
+                // 1) wstawiamy PILL (zachowuje data-i18n)
+                if (pillHTML) summary.insertAdjacentHTML('beforeend', pillHTML);
+
+                // 2) tytuł z zachowaniem data-i18n (klucz z h3)
+                const titleSpan = document.createElement('span');
+                titleSpan.className = 'acc-title';
+                if (h3Key) titleSpan.setAttribute('data-i18n', h3Key);
+                titleSpan.textContent = h3Text; // fallback zanim applyLang zadziała
+                summary.appendChild(titleSpan);
+
                 details.appendChild(summary);
 
                 const body = document.createElement('div');
@@ -832,12 +846,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 lists.forEach(l => body.appendChild(l));
                 details.appendChild(body);
 
-                // podmień zawartość karty
                 box.innerHTML = '';
                 box.appendChild(details);
                 box.dataset.accBuilt = '1';
             } else {
-                // przywróć oryginał na desktopie
+                // przywracamy desktop
                 if (box.dataset.accBuilt === '1' && box.dataset.orig) {
                     box.innerHTML = box.dataset.orig;
                     delete box.dataset.accBuilt;
@@ -846,20 +859,22 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // tylko jeden otwarty panel naraz
+        // tylko jeden otwarty panel na mobile
         if (isMobile) {
             wrap.addEventListener('toggle', (e) => {
                 const t = e.target;
                 if (t.tagName === 'DETAILS' && t.open) {
-                    wrap.querySelectorAll('details.breed-acc').forEach(d => {
-                        if (d !== t) d.open = false;
-                    });
+                    wrap.querySelectorAll('details.breed-acc').forEach(d => { if (d !== t) d.open = false; });
                 }
             }, { passive: true });
+
+            // >>> ważne: przetłumacz nowo wstrzyknięte elementy
+            try { if (typeof applyLang === 'function') applyLang(currentLang); } catch(_) {}
         }
     }
 
-    // start + reaguj na zmianę szerokości
+// start + reaguj na zmianę szerokości
     accordizeBreedCards();
     window.addEventListener('resize', accordizeBreedCards, { passive: true });
+
 });

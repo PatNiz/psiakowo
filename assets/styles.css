@@ -614,5 +614,24 @@ img{ cursor:zoom-in }
   #orasie .breed-acc .list b{
     min-width: 120px; color: var(--muted); font-weight: 600;
   }
+  /* Akordeon „O rasie” – bez wewnętrznej kreski */
+  @media (max-width: 640px){
+    #orasie .cards.is-accordion .card{
+      /* jeśli chcesz całkiem bez ramki karty, odkomentuj następną linijkę */
+      /* border: none; box-shadow: var(--shadow-sm); */
+    }
+    #orasie .breed-acc > summary{
+      border-bottom: none;           /* usuń podłużną kreskę */
+      background: var(--panel);      /* czyste tło */
+      padding: 14px 16px;
+    }
+    /* delikatny separator tylko w treści, jeśli masz wiele list */
+    #orasie .breed-acc .acc-body > .list + .list{
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px dashed rgba(2,6,23,.08);
+    }
+  }
+
 }
 
