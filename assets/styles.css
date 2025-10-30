@@ -350,3 +350,25 @@ section .section-title { animation: fadeUp var(--anim-slow) both; }
 }
 img { cursor: zoom-in; }
 .no-lightbox img { cursor: auto; }
+
+/* HERO: mobile-first kolejność – tekst nad obrazkiem */
+@media (max-width: 900px) {
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr;      /* jedna kolumna */
+    gap: 18px;
+  }
+  /* upewnij się, że tekst jest pierwszy */
+  .hero-grid > :first-child { order: 1; }
+  /* i karta ze zdjęciem idzie pod przyciskami */
+  .hero-card { order: 2; }
+
+  /* trochę oddechu pod CTA na mobile */
+  .hero .cta { margin-bottom: 4px; }
+  .hero-card { margin-top: 6px; }
+}
+
+/* jeśli chcesz, żeby szybciej składało do 1 kolumny na „większych” telefonach/małych tabletach */
+@media (max-width: 768px) {
+  .hero-grid { grid-template-columns: 1fr; }
+}
