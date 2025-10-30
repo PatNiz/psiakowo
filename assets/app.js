@@ -400,7 +400,8 @@ renderPuppies();
     sections.forEach(s => navObs.observe(s));
   }
   
-  
+  document.getElementById('onlyAvailable')?.addEventListener('change', renderPuppies);
+  renderPuppies();
 });
 
 // ====== DANE SZCZENIĄT (EDYTUJ) ======
