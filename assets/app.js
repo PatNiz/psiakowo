@@ -1,98 +1,140 @@
-// assets/app.js — wersja kompatybilna: lokalnie, IntelliJ 63342, Python http.server, GitHub Pages (repo albo custom domain)
+// assets/app.js — EN / PL / ES + flags (works on http(s) and file://)
+
 (() => {
     'use strict';
 
-    /* ---------- Wykrywanie języka z URL ---------- */
-    const LANGS = ['pl', 'en'];
-    const path = location.pathname;
-    const langMatch = path.match(/(?:^|\/)(pl|en)(?=\/|$)/);
-    const currentLang = langMatch ? langMatch[1] : 'en';
-    const targetLang  = currentLang === 'pl' ? 'en' : 'pl';
+    /* =========================
+     *  LANG DETECTION & SWITCH
+     * ========================= */
+    const LANGS = ['en','pl','es'];
+    const sanitizeLang = (l) => (LANGS.includes((l||'').toLowerCase()) ? l.toLowerCase() : 'en');
 
-    /* ---------- Przycisk języka pokazuje język DOCZELOWY ---------- */
-    const flagSVG = (code) => (
-        code === 'pl'
-            ? '<svg viewBox="0 0 3 2" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><rect width="3" height="2" fill="#fff"/><rect y="1" width="3" height="1" fill="#DC143C"/></svg>'
-            : '<svg viewBox="0 0 60 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><rect width="60" height="40" fill="#012169"/><path d="M0,0 60,40 M60,0 0,40" stroke="#FFF" stroke-width="8"/><path d="M0,0 60,40 M60,0 0,40" stroke="#C8102E" stroke-width="4"/><rect x="26" width="8" height="40" fill="#FFF"/><rect y="16" width="60" height="8" fill="#FFF"/><rect x="27.5" width="5" height="40" fill="#C8102E"/><rect y="17.5" width="60" height="5" fill="#C8102E"/></svg>'
-    );
+    function detectLangFromURL() {
+        // szukamy segmentu /en/ /pl/ /es/ gdziekolwiek w pathname
+        const m = location.pathname.match(/\/(en|pl|es)(?=\/)/i);
+        if (m) return m[1].toLowerCase();
 
-    const langBtn  = document.getElementById('langToggle');
-    const langBtnM = document.getElementById('langToggleMobile');
+        // fallback: <html lang="...">
+        const htmlLang = (document.documentElement.getAttribute('lang') || '').toLowerCase();
+        if (LANGS.includes(htmlLang)) return htmlLang;
 
-    const paintBtn = (btn, code) => {
-        if (!btn) return;
-        btn.innerHTML = `<span class="flag">${flagSVG(code)}</span><span class="code">${code.toUpperCase()}</span>`;
-    };
-    paintBtn(langBtn,  targetLang);
-    paintBtn(langBtnM, targetLang);
+        // fallback: localStorage
+        try {
+            const saved = localStorage.getItem('lang');
+            if (LANGS.includes(saved)) return saved;
+        } catch(e){}
 
-    /* ---------- Przełączanie języka – podmień TYLKO segment /pl|en/ ---------- */
+        return 'en';
+    }
+
+    const currentLang = sanitizeLang(detectLangFromURL());
+
     function switchTo(lang) {
-        try { localStorage.setItem('lang', lang); } catch(e) {}
+        lang = sanitizeLang(lang);
+        try { localStorage.setItem('lang', lang); } catch(e){}
 
-        // 1) najpierw spróbuj podmienić istniejący segment /pl|en/
-        const m = location.pathname.match(/^(.*?)(?:\/(pl|en))(\/.*)?$/);
-        if (m) {
-            const prefix = m[1] || '';             // np. "", "/repo" (na GitHub Pages repo)
-            const rest   = m[3] || '/index.html';  // reszta ścieżki
-            const newPath = `${prefix}/${lang}${rest}`;
-            location.href = newPath + location.search + location.hash;
+        // file:// — podmień segment w całym href (bez budowania ścieżki od root)
+        if (location.protocol === 'file:') {
+            const hasSeg = /\/(en|pl|es)(?=\/)/i.test(location.pathname);
+            if (!hasSeg) {
+                // spróbuj wstawić /{lang}/ przed index.html lub ostatnim segmentem
+                let href = location.href.replace(/(\/)([^\/?#]*\.html?)([#?]|$)/i, `/${lang}/$2$3`);
+                if (href === location.href) {
+                    href = location.href.replace(/\/([^\/?#]+)([#?]|$)/, `/${lang}/$1$2`);
+                }
+                location.href = href;
+                return;
+            }
+            location.href = location.href.replace(/\/(en|pl|es)(?=\/)/i, `/${lang}`);
             return;
         }
 
-        // 2) jeśli nie ma segmentu -> dorzuć /lang na końcu prefixu (obsługa root i GH Pages repo)
-        // Na GitHub Pages (repo) pierwszym segmentem bywa /repo-name, więc nie korzystamy z bezwzględnego '/'
-        const parts = location.pathname.split('/').filter(Boolean);
-        let prefix = '';
-        if (location.hostname.endsWith('.github.io') && parts.length) {
-            // username.github.io/repo → prefix to "/repo"
-            prefix = '/' + parts[0];
-        }
-        const newPath = `${prefix}/${lang}/index.html`;
-        location.href = newPath + location.search + location.hash;
+        // http(s) — zamień pierwszy segment językowy gdziekolwiek w ścieżce
+        const newHref = location.href
+            .replace(/\/(en|pl|es)(?=\/)/i, `/${lang}`)
+            .replace(/([?&])lang=(en|pl|es)\b/gi, '$1')
+            .replace(/[?&]$/, '');
+
+        location.href = newHref;
     }
 
-    const toggleLang = () => switchTo(targetLang);
-    langBtn?.addEventListener('click', toggleLang);
-    langBtnM?.addEventListener('click', toggleLang);
+    /* =========================
+     *  LANGUAGE FLAGS (3 buttons)
+     *  Place <div id="langFlags"></div> in header (and optional #langFlagsMobile)
+     * ========================= */
+    (function initLangFlags(){
+        const mounts = [document.getElementById('langFlags'), document.getElementById('langFlagsMobile')].filter(Boolean);
+        if (!mounts.length) return;
 
-    /* ---------- Teksty statusów / płci ---------- */
-    const STR = {
-        lang: currentLang,
-        male:    currentLang === 'pl' ? 'pies'   : 'male',
-        female:  currentLang === 'pl' ? 'suka'   : 'female',
-        available: currentLang === 'pl' ? 'Dostępny/a' : 'Available',
-        reserved:  currentLang === 'pl' ? 'Zarezerwowany/a' : 'Reserved',
-        sold:      currentLang === 'pl' ? 'Sprzedany/a' : 'Sold'
+        const flagSVG = (code) => {
+            if (code === 'pl') {
+                return '<svg viewBox="0 0 3 2" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><rect width="3" height="2" fill="#fff"/><rect y="1" width="3" height="1" fill="#DC143C"/></svg>';
+            }
+            if (code === 'es') {
+                return '<svg viewBox="0 0 3 2" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><rect width="3" height="2" fill="#AA151B"/><rect y="0.5" width="3" height="1" fill="#F1BF00"/></svg>';
+            }
+            // en (Union Jack)
+            return '<svg viewBox="0 0 60 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><rect width="60" height="40" fill="#012169"/><path d="M0,0 60,40 M60,0 0,40" stroke="#FFF" stroke-width="8"/><path d="M0,0 60,40 M60,0 0,40" stroke="#C8102E" stroke-width="4"/><rect x="26" width="8" height="40" fill="#FFF"/><rect y="16" width="60" height="8" fill="#FFF"/><rect x="27.5" width="5" height="40" fill="#C8102E"/><rect y="17.5" width="60" height="5" fill="#C8102E"/></svg>';
+        };
+
+        const makeButtons = () =>
+            LANGS.map(l => `<button type="button" class="flag-btn" data-lang="${l}" aria-label="${l.toUpperCase()}">${flagSVG(l)}</button>`).join('');
+
+        const markActive = (root) => {
+            root.querySelectorAll('.flag-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.getAttribute('data-lang') === currentLang);
+            });
+        };
+
+        mounts.forEach(root => {
+            root.innerHTML = makeButtons();
+            markActive(root);
+
+            root.addEventListener('click', (e) => {
+                const btn = e.target.closest('.flag-btn');
+                if (!btn || !root.contains(btn)) return;
+                const lang = sanitizeLang(btn.getAttribute('data-lang'));
+                if (!lang || lang === currentLang) return;
+                switchTo(lang);
+            });
+        });
+    })();
+
+    /* =========================
+     *  TEXT LABELS (cards)
+     * ========================= */
+    const STR_BY_LANG = {
+        en: { male:'male',   female:'female',   available:'Available',     reserved:'Reserved',        sold:'Sold' },
+        pl: { male:'pies',   female:'suka',     available:'Dostępny/a',    reserved:'Zarezerwowany/a', sold:'Sprzedany/a' },
+        es: { male:'macho',  female:'hembra',   available:'Disponible',    reserved:'Reservado/a',     sold:'Vendido/a' }
     };
+    const STR = STR_BY_LANG[currentLang] || STR_BY_LANG.en;
 
-    const textStatus = (s) => ({
-        available: STR.available,
-        reserved : STR.reserved,
-        sold     : STR.sold
-    }[s] || s);
-
+    const textStatus = (s) => ({ available: STR.available, reserved: STR.reserved, sold: STR.sold }[s] || s);
     const textSex = (sexPL) => {
-        if (currentLang === 'pl') return sexPL;            // 'pies' / 'suka'
-        return sexPL === 'pies' ? STR.male : STR.female;   // EN
+        // w danych: 'pies' / 'suka'
+        if (currentLang === 'pl') return sexPL;
+        return sexPL === 'pies' ? STR.male : STR.female;
     };
 
-    /* ---------- Dane szczeniąt (RELATYWNE ścieżki od /en/ lub /pl/) ---------- */
-    // Jesteśmy w /en/… lub /pl/…, więc do assets idziemy poziom wyżej: "../assets/…"
-    const A = '..'; // katalog wyżej względem /en/ i /pl/
+    /* =========================
+     *  PUPPIES DATA
+     * ========================= */
     const puppiesData = [
-        { id:'B1', name:'Black',      sex:'pies',   status:'available', imgs:[`${A}/assets/szczeniaki/Black1.jpg`,`${A}/assets/szczeniaki/Black2.jpg`]},
-        { id:'B2', name:'Blue',       sex:'pies',   status:'reserved',  imgs:[`${A}/assets/szczeniaki/Blue1.jpg`, `${A}/assets/szczeniaki/Blue2.jpg`]},
-        { id:'G1', name:'Green',      sex:'suka',   status:'available', imgs:[`${A}/assets/szczeniaki/Green1.jpg`,`${A}/assets/szczeniaki/Green2.jpg`]},
-        { id:'LB1',name:'Light Blue', sex:'suka',   status:'available', imgs:[`${A}/assets/szczeniaki/LightBlue1.jpg`,`${A}/assets/szczeniaki/LightBlue2.jpg`]},
-        { id:'O1', name:'Orange',     sex:'suka',   status:'available', imgs:[`${A}/assets/szczeniaki/Orange1.jpg`,`${A}/assets/szczeniaki/Orange2.jpg`]},
-        { id:'P1', name:'Pink',       sex:'suka',   status:'available', imgs:[`${A}/assets/szczeniaki/Pink1.jpg`,`${A}/assets/szczeniaki/Pink2.jpg`]},
-        { id:'R1', name:'Red',        sex:'suka',   status:'available', imgs:[`${A}/assets/szczeniaki/Red1.jpg`,`${A}/assets/szczeniaki/Red2.jpg`]},
-        { id:'Y1', name:'Yellow',     sex:'suka',   status:'available', imgs:[`${A}/assets/szczeniaki/Yellow1.jpg`,`${A}/assets/szczeniaki/Yellow2.jpg`]}
+        { id:'B1', name:'Black',      sex:'pies',   status:'available', imgs:['/assets/szczeniaki/Black1.jpg','/assets/szczeniaki/Black2.jpg']},
+        { id:'B2', name:'Blue',       sex:'pies',   status:'reserved',  imgs:['/assets/szczeniaki/Blue1.jpg','/assets/szczeniaki/Blue2.jpg']},
+        { id:'G1', name:'Green',      sex:'suka',   status:'available', imgs:['/assets/szczeniaki/Green1.jpg','/assets/szczeniaki/Green2.jpg']},
+        { id:'LB1',name:'Light Blue', sex:'suka',   status:'available', imgs:['/assets/szczeniaki/LightBlue1.jpg','/assets/szczeniaki/LightBlue2.jpg']},
+        { id:'O1', name:'Orange',     sex:'suka',   status:'available', imgs:['/assets/szczeniaki/Orange1.jpg','/assets/szczeniaki/Orange2.jpg']},
+        { id:'P1', name:'Pink',       sex:'suka',   status:'available', imgs:['/assets/szczeniaki/Pink1.jpg','/assets/szczeniaki/Pink2.jpg']},
+        { id:'R1', name:'Red',        sex:'suka',   status:'available', imgs:['/assets/szczeniaki/Red1.jpg','/assets/szczeniaki/Red2.jpg']},
+        { id:'Y1', name:'Yellow',     sex:'suka',   status:'available', imgs:['/assets/szczeniaki/Yellow1.jpg','/assets/szczeniaki/Yellow2.jpg']}
     ];
 
-    /* ---------- Render kart szczeniąt ---------- */
-    function renderPuppies(){
+    /* =========================
+     *  RENDER CARDS
+     * ========================= */
+    function renderPuppies() {
         const grid = document.getElementById('puppiesGrid');
         if(!grid) return;
 
@@ -171,8 +213,12 @@
             const onPointerMove = (e) => { if (!dragging) return; const x = e.clientX ?? (e.touches?.[0]?.clientX) ?? startX; dx = x - startX; };
             const onPointerUp   = (e) => {
                 if (!dragging) return; dragging = false; slider.classList.remove('dragging');
-                if (Math.abs(dx) > THRESH) { const dir = dx < 0 ? +1 : -1; show(Number(slider.dataset.current||0) + dir); suppressClick = true; setTimeout(()=> suppressClick = false, 120); }
-                dx = 0; try { area?.releasePointerCapture?.(e.pointerId ?? 0); } catch(_){}
+                if (Math.abs(dx) > THRESH) {
+                    const dir = dx < 0 ? +1 : -1;
+                    show(Number(slider.dataset.current||0) + dir);
+                    suppressClick = true; setTimeout(()=> suppressClick = false, 120);
+                }
+                dx = 0; try { area?.releasePointerCapture?.(e.pointerId ?? 0); } catch(_) {}
             };
             area?.addEventListener('pointerdown', onPointerDown, { passive:false });
             area?.addEventListener('pointermove', onPointerMove,  { passive:false });
@@ -212,10 +258,12 @@
     document.getElementById('onlyAvailable')?.addEventListener('change', renderPuppies);
     renderPuppies();
 
-    /* ---------- Lightbox dialog (wspólny) ---------- */
+    /* =========================
+     *  LIGHTBOX (shared <dialog>)
+     * ========================= */
     if (!document.querySelector('dialog')) {
         const overlay = document.createElement('dialog');
-        overlay.setAttribute('aria-label','Podgląd zdjęcia');
+        overlay.setAttribute('aria-label','Image preview');
         Object.assign(overlay.style, { padding: 0, border: 'none', background: 'transparent' });
         overlay.addEventListener('click', () => overlay.close());
         const lbImg = document.createElement('img');
@@ -232,7 +280,9 @@
         });
     }
 
-    /* ---------- Header / menu ---------- */
+    /* =========================
+     *  HEADER / MOBILE MENU
+     * ========================= */
     const setHeaderH = () => {
         const h = document.querySelector('header');
         const hh = h ? Math.round(h.getBoundingClientRect().height) : 72;
@@ -276,7 +326,9 @@
         });
     }
 
-    // Smooth scroll
+    /* =========================
+     *  SMOOTH SCROLL (#hash)
+     * ========================= */
     document.querySelectorAll('a[href^="#"]').forEach(a => {
         a.addEventListener('click', (e) => {
             const href = a.getAttribute('href');
@@ -293,4 +345,5 @@
             }
         });
     });
+
 })();
