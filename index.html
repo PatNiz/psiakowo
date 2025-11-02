@@ -8,6 +8,7 @@
   <meta name="description" content="Pyrenean Puppies – Pyrenean Mastiff / Great Pyrenees kennel.">
 
   <!-- hreflang -->
+  <link rel="alternate" href="https://pyreneanpuppies.com/es/" hreflang="es"/>
   <link rel="alternate" href="https://pyreneanpuppies.com/en/" hreflang="en"/>
   <link rel="alternate" href="https://pyreneanpuppies.com/pl/" hreflang="pl"/>
   <link rel="alternate" href="https://pyreneanpuppies.com/" hreflang="x-default"/>
@@ -23,7 +24,8 @@
 
       var lang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
       if (lang.startsWith('pl')) location.replace('/pl/');
-      else location.replace('/en/');
+      else if (lang.startsWith('es')) location.replace('/es/')
+      else (location.replace('/en/'));
     })();
   </script>
 

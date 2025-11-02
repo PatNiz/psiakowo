@@ -122,7 +122,7 @@
     /* ----------------- Puppies text labels ----------------- */
     const STR_BY_LANG = {
         en: { male:'male', female:'female', available:'Available', reserved:'Reserved', sold:'Sold' },
-        pl: { male:'pies', female:'suka',   available:'Dostępny/a', reserved:'Zarezerwowany/a', sold:'Sprzedany/a' },
+        pl: { male:'pies', female:'suczka',   available:'Dostępny/a', reserved:'Zarezerwowany/a', sold:'Sprzedany/a' },
         es: { male:'macho',female:'hembra', available:'Disponible', reserved:'Reservado/a',     sold:'Vendido/a' }
     };
     const strFor = () => (STR_BY_LANG[currentLang] || STR_BY_LANG.en);
@@ -131,14 +131,14 @@
 
     /* ----------------- Puppies data ----------------- */
     const puppiesData = [
-        { id:'B1', name:'Black',      sex:'pies',   status:'available', imgs:['/assets/szczeniaki/Black1.jpg','/assets/szczeniaki/Black2.jpg']},
-        { id:'B2', name:'Blue',       sex:'pies',   status:'reserved',  imgs:['/assets/szczeniaki/Blue1.jpg','/assets/szczeniaki/Blue2.jpg']},
-        { id:'G1', name:'Green',      sex:'suka',   status:'available', imgs:['/assets/szczeniaki/Green1.jpg','/assets/szczeniaki/Green2.jpg']},
-        { id:'LB1',name:'Light Blue', sex:'suka',   status:'available', imgs:['/assets/szczeniaki/LightBlue1.jpg','/assets/szczeniaki/LightBlue2.jpg']},
-        { id:'O1', name:'Orange',     sex:'suka',   status:'available', imgs:['/assets/szczeniaki/Orange1.jpg','/assets/szczeniaki/Orange2.jpg']},
-        { id:'P1', name:'Pink',       sex:'suka',   status:'available', imgs:['/assets/szczeniaki/Pink1.jpg','/assets/szczeniaki/Pink2.jpg']},
-        { id:'R1', name:'Red',        sex:'suka',   status:'available', imgs:['/assets/szczeniaki/Red1.jpg','/assets/szczeniaki/Red2.jpg']},
-        { id:'Y1', name:'Yellow',     sex:'suka',   status:'available', imgs:['/assets/szczeniaki/Yellow1.jpg','/assets/szczeniaki/Yellow2.jpg']}
+        { id:'B1', name:'Black',      sex:'suczka',   status:'available', imgs:['/assets/szczeniaki/Black1.jpg','/assets/szczeniaki/Black2.jpg']},
+        { id:'B2', name:'Blue',       sex:'suczka',   status:'available',  imgs:['/assets/szczeniaki/Blue1.jpg','/assets/szczeniaki/Blue2.jpg']},
+        { id:'G1', name:'Green',      sex:'pies',   status:'available', imgs:['/assets/szczeniaki/Green1.jpg','/assets/szczeniaki/Green2.jpg']},
+        { id:'LB1',name:'Light Blue', sex:'pies',   status:'available', imgs:['/assets/szczeniaki/LightBlue1.jpg','/assets/szczeniaki/LightBlue2.jpg']},
+        { id:'O1', name:'Orange',     sex:'pies',   status:'available', imgs:['/assets/szczeniaki/Orange1.jpg','/assets/szczeniaki/Orange2.jpg']},
+        { id:'P1', name:'Pink',       sex:'suczka',   status:'available', imgs:['/assets/szczeniaki/Pink1.jpg','/assets/szczeniaki/Pink2.jpg']},
+        { id:'R1', name:'Red',        sex:'pies',   status:'available', imgs:['/assets/szczeniaki/Red1.jpg','/assets/szczeniaki/Red2.jpg']},
+        { id:'Y1', name:'Yellow',     sex:'suczka',   status:'available', imgs:['/assets/szczeniaki/Yellow1.jpg','/assets/szczeniaki/Yellow2.jpg']}
     ];
 
     /* ----------------- Puppies renderer/slider ----------------- */

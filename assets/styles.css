@@ -81,6 +81,12 @@ header{
   transition:transform var(--anim-fast), box-shadow var(--anim-fast), filter var(--anim-fast);
   will-change:transform;
 }
+.send{
+  position:relative; display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  padding:10px 14px; border-radius:12px; color:#fff; font-weight:800;
+  background:linear-gradient(90deg, var(--accent), var(--accent-2));
+  border:1px solid rgba(232,154,91,.28);
+}
 .cta:hover{ transform:translateY(-1px) scale(1.01); box-shadow:var(--shadow-lg); filter:saturate(1.05) }
 .cta:focus-visible{ box-shadow:0 0 0 4px rgba(232,154,91,.25), 0 10px 24px rgba(2,6,23,.18) }
 .cta:active{ transform:translateY(0) scale(.99) }
@@ -512,3 +518,30 @@ img{ cursor:zoom-in }
 
 /* Ważne: dropdown/flag nie może być ucinany */
 header .menu, .nav .menu, .menu-wrap, header, .nav { overflow: visible !important; }
+
+
+
+/* Blokuj rozciąganie przycisku w flex-rzędzie */
+.stack .cta{
+  flex: 0 0 auto;
+  white-space: nowrap;
+  overflow: hidden;      /* ripple nie wychodzi poza przycisk */
+  line-height: 1;        /* stabilna wysokość */
+}
+
+/* Nie pozwól, żeby komunikaty spychały przycisk */
+.stack .form-msg{
+  flex: 1 1 auto;
+  min-width: 0;          /* zapobiega poszerzaniu rzędu */
+  display: inline-block; /* niech zajmuje tylko potrzebne miejsce */
+}
+
+/* Opcjonalnie – minimalnie spokojniejsze animacje przycisku */
+.cta:hover{ transform: translateY(-1px); }     /* bez scale(1.01) */
+.cta:active{ transform: translateY(0); }
+
+/* Ripple bez wpływu na layout (już jest absolute), ale na wszelki wypadek: */
+.cta{ position: relative; }
+.cta::after{ pointer-events: none; }
+
+
