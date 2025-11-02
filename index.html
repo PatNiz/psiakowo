@@ -10,19 +10,34 @@
   <!-- hreflang -->
   <link rel="alternate" href="https://pyreneanpuppies.com/en/" hreflang="en"/>
   <link rel="alternate" href="https://pyreneanpuppies.com/pl/" hreflang="pl"/>
+  <link rel="alternate" href="https://pyreneanpuppies.com/es/" hreflang="es"/>
   <link rel="alternate" href="https://pyreneanpuppies.com/" hreflang="x-default"/>
 
   <script>
-    (function(){
+    (function () {
       try {
-        var saved = localStorage.getItem('lang');
-        if (saved === 'pl') { location.replace('/pl/'); return; }
-        if (saved === 'en') { location.replace('/en/'); return; }
-      } catch(e){}
+        // 1) ?lang=en|pl|es — najwyższy priorytet
+        var m = location.search.match(/[?&]lang=(en|pl|es)\b/i);
+        if (m) {
+          var qlang = m[1].toLowerCase();
+          try { localStorage.setItem('lang', qlang); } catch (e) {}
+          location.replace('/' + qlang + '/' + location.hash);
+          return;
+        }
 
-      var lang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
-      if (lang.startsWith('pl')) location.replace('/pl/');
-      else location.replace('/en/');
+        // 2) localStorage (z poprzedniego wyboru)
+        var saved = null;
+        try { saved = localStorage.getItem('lang'); } catch (e) {}
+        if (saved === 'pl' || saved === 'en' || saved === 'es') {
+          location.replace('/' + saved + '/' + location.hash);
+          return;
+        }
+
+        // 3) domyślnie ZAWSZE EN
+        location.replace('/en/' + location.hash);
+      } catch (e) {
+        location.replace('/en/');
+      }
     })();
   </script>
 
@@ -30,7 +45,12 @@
 </head>
 <body>
 <div style="padding:24px; text-align:center">
-  Redirecting… <p><a href="/en/">Go to English</a> · <a href="/pl/">Przejdź do PL</a></p>
+  Redirecting…
+  <p>
+    <a href="/en/">English</a> ·
+    <a href="/pl/">Polski</a> ·
+    <a href="/es/">Español</a>
+  </p>
 </div>
 </body>
 </html>
