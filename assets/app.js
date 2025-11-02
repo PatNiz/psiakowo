@@ -18,10 +18,10 @@
             location.pathname.startsWith('/es/') ? 'es' :
                 location.pathname.startsWith('/en/') ? 'en' : null;
 
-    let savedLang = null;
-    try { savedLang = localStorage.getItem('lang') || null; } catch(_){}
 
-    let currentLang = sanitizeLang(pathLangFromURL || savedLang || 'en');
+    let currentLang = sanitizeLang(pathLangFromURL || 'en');
+
+
 
     function switchTo(lang){
         lang = sanitizeLang(lang);
