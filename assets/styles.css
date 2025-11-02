@@ -632,6 +632,6 @@ img{ cursor:zoom-in }
       border-top: 1px dashed rgba(2,6,23,.08);
     }
   }
-
+.hero-card picture, .hero-card img { display:block; width:100%; height:auto; }
 }
 
