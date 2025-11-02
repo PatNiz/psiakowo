@@ -1,75 +1,44 @@
-// assets/app.js  — EN / PL / ES + dropdown .lang-dd z flagami (SVG) + fallback <select>
-/* === 3 FLAGS LANGUAGE SWITCH === */
-(function initLangFlags(){
-    // montaże: desktop + mobile (opcjonalny)
-    const mounts = [document.getElementById('langFlags'), document.getElementById('langFlagsMobile')].filter(Boolean);
-    if (!mounts.length) return;
-
-    const langs = ['en','pl','es'];
-
-    const flagSVG = (code) => {
-        if (code === 'pl') {
-            return '<svg viewBox="0 0 3 2" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><rect width="3" height="2" fill="#fff"/><rect y="1" width="3" height="1" fill="#DC143C"/></svg>';
-        }
-        if (code === 'es') {
-            return '<svg viewBox="0 0 3 2" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><rect width="3" height="2" fill="#AA151B"/><rect y="0.5" width="3" height="1" fill="#F1BF00"/></svg>';
-        }
-        // en (UK style)
-        return '<svg viewBox="0 0 60 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><rect width="60" height="40" fill="#012169"/><path d="M0,0 60,40 M60,0 0,40" stroke="#FFF" stroke-width="8"/><path d="M0,0 60,40 M60,0 0,40" stroke="#C8102E" stroke-width="4"/><rect x="26" width="8" height="40" fill="#FFF"/><rect y="16" width="60" height="8" fill="#FFF"/><rect x="27.5" width="5" height="40" fill="#C8102E"/><rect y="17.5" width="60" height="5" fill="#C8102E"/></svg>';
-    };
-
-    const makeButtons = () =>
-        langs.map(l => `<button type="button" class="flag-btn" data-lang="${l}" aria-label="${l.toUpperCase()}">${flagSVG(l)}</button>`).join('');
-
-    const markActive = (root) => {
-        root.querySelectorAll('.flag-btn').forEach(btn => {
-            btn.classList.toggle('active', btn.getAttribute('data-lang') === currentLang);
-        });
-    };
-
-    mounts.forEach(root => {
-        root.innerHTML = makeButtons();
-        markActive(root);
-
-        root.addEventListener('click', (e) => {
-            const btn = e.target.closest('.flag-btn');
-            if (!btn || !root.contains(btn)) return;
-            const lang = btn.getAttribute('data-lang');
-            if (!lang || lang === currentLang) return;
-            // zapis w localStorage i bezpieczny redirect z zachowaniem ścieżki / hash / query (bez ?lang=)
-            switchTo(lang);
-        });
-    });
-})();
+// assets/app.js — EN / PL / ES, 3 flagi, poprawne przełączanie /en|/pl|/es, działa z /index.html
 
 (() => {
     'use strict';
 
     /* =========================
-     *  DETEKCJA JĘZYKA
-     *  Priorytet: URL (/en|/pl|/es) > localStorage > 'en'
+     *  DETEKCJA JĘZYKA (URL > localStorage > EN)
      * ========================= */
+    const LANGS = ['en','pl','es'];
+    const sanitizeLang = l => LANGS.includes(l) ? l : 'en';
+
     const pathLangFromURL =
         location.pathname.startsWith('/pl/') ? 'pl' :
             location.pathname.startsWith('/es/') ? 'es' :
                 location.pathname.startsWith('/en/') ? 'en' : null;
 
-    let saved;
-    try { saved = localStorage.getItem('lang'); } catch(e) { saved = null; }
+    let saved = null;
+    try { saved = localStorage.getItem('lang'); } catch(e) {}
 
-    const LANGS = ['en','pl','es'];
-    const sanitizeLang = (l) => (LANGS.includes(l) ? l : 'en');
     const currentLang = sanitizeLang(pathLangFromURL || saved || 'en');
 
+    /* =========================
+     *  SWITCH (zachowuje /index.html vs katalog)
+     * ========================= */
     function switchTo(lang) {
         lang = sanitizeLang(lang);
         try { localStorage.setItem('lang', lang); } catch(e){}
 
-        // usuń wiodący /en|pl|es z bieżącej ścieżki i przypnij nowy prefix
-        const base = location.pathname.replace(/^\/(en|pl|es)(?=\/|$)/, '');
-        const newPath = `/${lang}${base.endsWith('/') ? base : base + '/'}`;
+        // usuń wiodący /en|pl|es
+        let base = location.pathname.replace(/^\/(en|pl|es)(?=\/|$)/, '');
 
-        // wyczyść ewentualny ?lang=...
+        // jeżeli pusta — root
+        if (!base) base = '/';
+
+        // jeśli NIE plik (np. 'index.html' albo 'coś.png'), a brak końcowego '/', to dodaj
+        const lastSeg = base.split('/').pop() || '';
+        const isFilePath = /\.[a-z0-9]+$/i.test(lastSeg);
+        if (!isFilePath && !base.endsWith('/')) base += '/';
+
+        const newPath = `/${lang}${base}`;
+
         const cleanQuery = location.search
             .replace(/([?&])lang=(en|pl|es)\b/gi, '$1')
             .replace(/[?&]$/, '');
@@ -77,8 +46,49 @@
         location.href = newPath + cleanQuery + location.hash;
     }
 
+    /* =========================
+     *  3 FLAGI (desktop: #langFlags, mobile: #langFlagsMobile)
+     *  — render po zdefiniowaniu switchTo/currentLang
+     * ========================= */
+    (function initLangFlags(){
+        const mounts = [document.getElementById('langFlags'), document.getElementById('langFlagsMobile')].filter(Boolean);
+        if (!mounts.length) return;
 
+        const flagSVG = (code) => {
+            if (code === 'pl') {
+                return '<svg viewBox="0 0 3 2" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><rect width="3" height="2" fill="#fff"/><rect y="1" width="3" height="1" fill="#DC143C"/></svg>';
+            }
+            if (code === 'es') {
+                return '<svg viewBox="0 0 3 2" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><rect width="3" height="2" fill="#AA151B"/><rect y="0.5" width="3" height="1" fill="#F1BF00"/></svg>';
+            }
+            // en (UK)
+            return '<svg viewBox="0 0 60 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><rect width="60" height="40" fill="#012169"/><path d="M0,0 60,40 M60,0 0,40" stroke="#FFF" stroke-width="8"/><path d="M0,0 60,40 M60,0 0,40" stroke="#C8102E" stroke-width="4"/><rect x="26" width="8" height="40" fill="#FFF"/><rect y="16" width="60" height="8" fill="#FFF"/><rect x="27.5" width="5" height="40" fill="#C8102E"/><rect y="17.5" width="60" height="5" fill="#C8102E"/></svg>';
+        };
 
+        const langs = ['en','pl','es'];
+        const makeButtons = () => langs.map(l => (
+            `<button type="button" class="flag-btn" data-lang="${l}" aria-label="${l.toUpperCase()}">${flagSVG(l)}</button>`
+        )).join('');
+
+        const markActive = (root) => {
+            root.querySelectorAll('.flag-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.getAttribute('data-lang') === currentLang);
+            });
+        };
+
+        mounts.forEach(root => {
+            root.innerHTML = makeButtons();
+            markActive(root);
+
+            root.addEventListener('click', (e) => {
+                const btn = e.target.closest('.flag-btn');
+                if (!btn || !root.contains(btn)) return;
+                const lang = btn.getAttribute('data-lang');
+                if (!lang || lang === currentLang) return;
+                switchTo(lang);
+            });
+        });
+    })();
 
     /* =========================
      *  FALLBACK: <select id="langSelect"> / #langSelectMobile
@@ -93,8 +103,7 @@
             Array.from(select.options).forEach(opt => {
                 const v = sanitizeLang(opt.value);
                 opt.value = v;
-                // Uwaga: SVG w <option> się nie wyświetli — zostawiamy czysty kod języka
-                opt.textContent = v.toUpperCase();
+                opt.textContent = v.toUpperCase(); // (SVG w <option> i tak się nie pokaże)
             });
         };
         decorateOptions(dd);
@@ -123,14 +132,10 @@
     const STR = STR_BY_LANG[currentLang] || STR_BY_LANG.en;
 
     const textStatus = (s) => ({ available: STR.available, reserved: STR.reserved, sold: STR.sold }[s] || s);
-    const textSex = (sexPL) => {
-        // w danych: 'pies' / 'suka'
-        if (currentLang === 'pl') return sexPL;
-        return sexPL === 'pies' ? STR.male : STR.female;
-    };
+    const textSex = (sexPL) => (currentLang === 'pl' ? sexPL : (sexPL === 'pies' ? STR.male : STR.female));
 
     /* =========================
-     *  DANE SZCZENIĄT (absolutne ścieżki do /assets)
+     *  DANE SZCZENIĄT
      * ========================= */
     const puppiesData = [
         { id:'B1', name:'Black',      sex:'pies',   status:'available', imgs:['/assets/szczeniaki/Black1.jpg','/assets/szczeniaki/Black2.jpg']},
@@ -225,12 +230,8 @@
             const onPointerMove = (e) => { if (!dragging) return; const x = e.clientX ?? (e.touches?.[0]?.clientX) ?? startX; dx = x - startX; };
             const onPointerUp   = (e) => {
                 if (!dragging) return; dragging = false; slider.classList.remove('dragging');
-                if (Math.abs(dx) > THRESH) {
-                    const dir = dx < 0 ? +1 : -1;
-                    show(Number(slider.dataset.current||0) + dir);
-                    suppressClick = true; setTimeout(()=> suppressClick = false, 120);
-                }
-                dx = 0; try { area?.releasePointerCapture?.(e.pointerId ?? 0); } catch(_) {}
+                if (Math.abs(dx) > THRESH) { const dir = dx < 0 ? +1 : -1; show(Number(slider.dataset.current||0) + dir); suppressClick = true; setTimeout(()=> suppressClick = false, 120); }
+                dx = 0; try { area?.releasePointerCapture?.(e.pointerId ?? 0); } catch(_){}
             };
             area?.addEventListener('pointerdown', onPointerDown, { passive:false });
             area?.addEventListener('pointermove', onPointerMove,  { passive:false });
@@ -339,7 +340,7 @@
     }
 
     /* =========================
-     *  SMOOTH SCROLL (linki #hash)
+     *  SMOOTH SCROLL (#hash)
      * ========================= */
     document.querySelectorAll('a[href^="#"]').forEach(a => {
         a.addEventListener('click', (e) => {
