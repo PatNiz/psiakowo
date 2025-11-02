@@ -1,54 +1,66 @@
-// assets/app.js — EN / PL / ES, 3 flagi, poprawne przełączanie /en|/pl|/es, działa z /index.html
+// assets/app.js — EN / PL / ES + flags (works on http(s) and file://)
 
 (() => {
     'use strict';
 
     /* =========================
-     *  DETEKCJA JĘZYKA (URL > localStorage > EN)
+     *  LANG DETECTION & SWITCH
      * ========================= */
     const LANGS = ['en','pl','es'];
-    const sanitizeLang = l => LANGS.includes(l) ? l : 'en';
+    const sanitizeLang = (l) => (LANGS.includes((l||'').toLowerCase()) ? l.toLowerCase() : 'en');
 
-    const pathLangFromURL =
-        location.pathname.startsWith('/pl/') ? 'pl' :
-            location.pathname.startsWith('/es/') ? 'es' :
-                location.pathname.startsWith('/en/') ? 'en' : null;
+    function detectLangFromURL() {
+        // szukamy segmentu /en/ /pl/ /es/ gdziekolwiek w pathname
+        const m = location.pathname.match(/\/(en|pl|es)(?=\/)/i);
+        if (m) return m[1].toLowerCase();
 
-    let saved = null;
-    try { saved = localStorage.getItem('lang'); } catch(e) {}
+        // fallback: <html lang="...">
+        const htmlLang = (document.documentElement.getAttribute('lang') || '').toLowerCase();
+        if (LANGS.includes(htmlLang)) return htmlLang;
 
-    const currentLang = sanitizeLang(pathLangFromURL || saved || 'en');
+        // fallback: localStorage
+        try {
+            const saved = localStorage.getItem('lang');
+            if (LANGS.includes(saved)) return saved;
+        } catch(e){}
 
-    /* =========================
-     *  SWITCH (zachowuje /index.html vs katalog)
-     * ========================= */
+        return 'en';
+    }
+
+    const currentLang = sanitizeLang(detectLangFromURL());
+
     function switchTo(lang) {
         lang = sanitizeLang(lang);
         try { localStorage.setItem('lang', lang); } catch(e){}
 
-        // usuń wiodący /en|pl|es
-        let base = location.pathname.replace(/^\/(en|pl|es)(?=\/|$)/, '');
+        // file:// — podmień segment w całym href (bez budowania ścieżki od root)
+        if (location.protocol === 'file:') {
+            const hasSeg = /\/(en|pl|es)(?=\/)/i.test(location.pathname);
+            if (!hasSeg) {
+                // spróbuj wstawić /{lang}/ przed index.html lub ostatnim segmentem
+                let href = location.href.replace(/(\/)([^\/?#]*\.html?)([#?]|$)/i, `/${lang}/$2$3`);
+                if (href === location.href) {
+                    href = location.href.replace(/\/([^\/?#]+)([#?]|$)/, `/${lang}/$1$2`);
+                }
+                location.href = href;
+                return;
+            }
+            location.href = location.href.replace(/\/(en|pl|es)(?=\/)/i, `/${lang}`);
+            return;
+        }
 
-        // jeżeli pusta — root
-        if (!base) base = '/';
-
-        // jeśli NIE plik (np. 'index.html' albo 'coś.png'), a brak końcowego '/', to dodaj
-        const lastSeg = base.split('/').pop() || '';
-        const isFilePath = /\.[a-z0-9]+$/i.test(lastSeg);
-        if (!isFilePath && !base.endsWith('/')) base += '/';
-
-        const newPath = `/${lang}${base}`;
-
-        const cleanQuery = location.search
+        // http(s) — zamień pierwszy segment językowy gdziekolwiek w ścieżce
+        const newHref = location.href
+            .replace(/\/(en|pl|es)(?=\/)/i, `/${lang}`)
             .replace(/([?&])lang=(en|pl|es)\b/gi, '$1')
             .replace(/[?&]$/, '');
 
-        location.href = newPath + cleanQuery + location.hash;
+        location.href = newHref;
     }
 
     /* =========================
-     *  3 FLAGI (desktop: #langFlags, mobile: #langFlagsMobile)
-     *  — render po zdefiniowaniu switchTo/currentLang
+     *  LANGUAGE FLAGS (3 buttons)
+     *  Place <div id="langFlags"></div> in header (and optional #langFlagsMobile)
      * ========================= */
     (function initLangFlags(){
         const mounts = [document.getElementById('langFlags'), document.getElementById('langFlagsMobile')].filter(Boolean);
@@ -61,14 +73,12 @@
             if (code === 'es') {
                 return '<svg viewBox="0 0 3 2" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><rect width="3" height="2" fill="#AA151B"/><rect y="0.5" width="3" height="1" fill="#F1BF00"/></svg>';
             }
-            // en (UK)
+            // en (Union Jack)
             return '<svg viewBox="0 0 60 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><rect width="60" height="40" fill="#012169"/><path d="M0,0 60,40 M60,0 0,40" stroke="#FFF" stroke-width="8"/><path d="M0,0 60,40 M60,0 0,40" stroke="#C8102E" stroke-width="4"/><rect x="26" width="8" height="40" fill="#FFF"/><rect y="16" width="60" height="8" fill="#FFF"/><rect x="27.5" width="5" height="40" fill="#C8102E"/><rect y="17.5" width="60" height="5" fill="#C8102E"/></svg>';
         };
 
-        const langs = ['en','pl','es'];
-        const makeButtons = () => langs.map(l => (
-            `<button type="button" class="flag-btn" data-lang="${l}" aria-label="${l.toUpperCase()}">${flagSVG(l)}</button>`
-        )).join('');
+        const makeButtons = () =>
+            LANGS.map(l => `<button type="button" class="flag-btn" data-lang="${l}" aria-label="${l.toUpperCase()}">${flagSVG(l)}</button>`).join('');
 
         const markActive = (root) => {
             root.querySelectorAll('.flag-btn').forEach(btn => {
@@ -83,7 +93,7 @@
             root.addEventListener('click', (e) => {
                 const btn = e.target.closest('.flag-btn');
                 if (!btn || !root.contains(btn)) return;
-                const lang = btn.getAttribute('data-lang');
+                const lang = sanitizeLang(btn.getAttribute('data-lang'));
                 if (!lang || lang === currentLang) return;
                 switchTo(lang);
             });
@@ -91,38 +101,7 @@
     })();
 
     /* =========================
-     *  FALLBACK: <select id="langSelect"> / #langSelectMobile
-     * ========================= */
-    (function initSelectFallback() {
-        const dd  = document.getElementById('langSelect');
-        const ddM = document.getElementById('langSelectMobile');
-        if (!dd && !ddM) return;
-
-        const decorateOptions = (select) => {
-            if (!select) return;
-            Array.from(select.options).forEach(opt => {
-                const v = sanitizeLang(opt.value);
-                opt.value = v;
-                opt.textContent = v.toUpperCase(); // (SVG w <option> i tak się nie pokaże)
-            });
-        };
-        decorateOptions(dd);
-        decorateOptions(ddM);
-
-        if (dd)  dd.value  = currentLang;
-        if (ddM) ddM.value = currentLang;
-
-        const sync = (lng) => {
-            if (dd  && dd.value  !== lng) dd.value  = lng;
-            if (ddM && ddM.value !== lng) ddM.value = lng;
-            switchTo(lng);
-        };
-        dd?.addEventListener('change',  e => sync(e.target.value));
-        ddM?.addEventListener('change', e => sync(e.target.value));
-    })();
-
-    /* =========================
-     *  TEKSTY (etykiety do kart)
+     *  TEXT LABELS (cards)
      * ========================= */
     const STR_BY_LANG = {
         en: { male:'male',   female:'female',   available:'Available',     reserved:'Reserved',        sold:'Sold' },
@@ -132,10 +111,14 @@
     const STR = STR_BY_LANG[currentLang] || STR_BY_LANG.en;
 
     const textStatus = (s) => ({ available: STR.available, reserved: STR.reserved, sold: STR.sold }[s] || s);
-    const textSex = (sexPL) => (currentLang === 'pl' ? sexPL : (sexPL === 'pies' ? STR.male : STR.female));
+    const textSex = (sexPL) => {
+        // w danych: 'pies' / 'suka'
+        if (currentLang === 'pl') return sexPL;
+        return sexPL === 'pies' ? STR.male : STR.female;
+    };
 
     /* =========================
-     *  DANE SZCZENIĄT
+     *  PUPPIES DATA
      * ========================= */
     const puppiesData = [
         { id:'B1', name:'Black',      sex:'pies',   status:'available', imgs:['/assets/szczeniaki/Black1.jpg','/assets/szczeniaki/Black2.jpg']},
@@ -149,7 +132,7 @@
     ];
 
     /* =========================
-     *  RENDER KART SZCZENIĄT
+     *  RENDER CARDS
      * ========================= */
     function renderPuppies() {
         const grid = document.getElementById('puppiesGrid');
@@ -230,8 +213,12 @@
             const onPointerMove = (e) => { if (!dragging) return; const x = e.clientX ?? (e.touches?.[0]?.clientX) ?? startX; dx = x - startX; };
             const onPointerUp   = (e) => {
                 if (!dragging) return; dragging = false; slider.classList.remove('dragging');
-                if (Math.abs(dx) > THRESH) { const dir = dx < 0 ? +1 : -1; show(Number(slider.dataset.current||0) + dir); suppressClick = true; setTimeout(()=> suppressClick = false, 120); }
-                dx = 0; try { area?.releasePointerCapture?.(e.pointerId ?? 0); } catch(_){}
+                if (Math.abs(dx) > THRESH) {
+                    const dir = dx < 0 ? +1 : -1;
+                    show(Number(slider.dataset.current||0) + dir);
+                    suppressClick = true; setTimeout(()=> suppressClick = false, 120);
+                }
+                dx = 0; try { area?.releasePointerCapture?.(e.pointerId ?? 0); } catch(_) {}
             };
             area?.addEventListener('pointerdown', onPointerDown, { passive:false });
             area?.addEventListener('pointermove', onPointerMove,  { passive:false });
@@ -272,7 +259,7 @@
     renderPuppies();
 
     /* =========================
-     *  LIGHTBOX (wspólny <dialog>)
+     *  LIGHTBOX (shared <dialog>)
      * ========================= */
     if (!document.querySelector('dialog')) {
         const overlay = document.createElement('dialog');
