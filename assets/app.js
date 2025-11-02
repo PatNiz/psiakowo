@@ -21,33 +21,36 @@
         savedLang = localStorage.getItem('lang') || null;
     } catch (_) {}
 
-// Decide the current language in this order: URL prefix -> saved value -> default 'en'.
-    let currentLang = sanitizeLang(pathLangFromURL || savedLang || 'en');
+// 3. Wybierz bieżący język: URL > localStorage > domyślny "en".
+    const currentLang = sanitizeLang(pathLangFromURL || savedLang || 'en');
 
     function switchTo(lang) {
         lang = sanitizeLang(lang);
-        try { localStorage.setItem('lang', lang); } catch (_) {}
+        try {
+            localStorage.setItem('lang', lang);
+        } catch (_) {}
 
-        // Remove any existing language prefix (/pl or /es) from the current path.
+        // 4. Usuń istniejący prefiks językowy (/pl lub /es) z aktualnej ścieżki.
         let base = location.pathname.replace(/^\/(pl|es)(?=\/|$)/, '');
 
-        // Ensure the path ends with a slash if it's not a file (to keep relative URLs consistent).
+        // 5. Zadbaj o końcowy ukośnik, jeśli to nie plik – dla spójności linków względnych.
         const last = base.split('/').pop() || '';
         const isFile = /\.[a-z0-9]+$/i.test(last);
         if (!base) base = '/';
         if (!isFile && !base.endsWith('/')) base += '/';
 
-        // Clean up any existing lang query parameter (if present).
+        // 6. Wyczyść parametry z query `lang=pl` lub `lang=es` (domyślny EN ignorujemy).
         const cleanQuery = location.search
-            .replace(/([?&])lang=(en|pl|es)\b/gi, '$1')
+            .replace(/([?&])lang=(pl|es)\b/gi, '$1')
             .replace(/[?&]$/, '');
 
-        // Build the new URL. English stays at the root (no prefix); pl and es get a prefix.
-        if (lang === 'en') {
-            location.href = `${base}${cleanQuery}${location.hash}`;
-        } else {
-            location.href = `/${lang}${base}${cleanQuery}${location.hash}`;
-        }
+        // 7. Jeśli `lang` to "en", nie dodawaj prefiksu; w pozostałych przypadkach dodaj /pl lub /es.
+        const newUrl =
+            lang === 'en'
+                ? `${base}${cleanQuery}${location.hash}`
+                : `/${lang}${base}${cleanQuery}${location.hash}`;
+
+        location.href = newUrl;
     }
 
     /* ----------------- Flags (desktop + mobile mounts) ----------------- */
