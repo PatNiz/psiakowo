@@ -10,30 +10,44 @@
     const $$ = (q, r=document) => Array.from(r.querySelectorAll(q));
 
     /* ----------------- Language ----------------- */
-    const LANGS = ['en','pl','es'];
-    const sanitizeLang = l => LANGS.includes(l) ? l : 'en';
-
     const pathLangFromURL =
-        location.pathname.startsWith('/pl/') ? 'pl' :
-            location.pathname.startsWith('/es/') ? 'es' :
-                location.pathname.startsWith('/en/') ? 'en' : null;
+        /^\/pl(\/|$)/.test(location.pathname) ? 'pl' :
+            /^\/es(\/|$)/.test(location.pathname) ? 'es' :
+                null;
 
+// Try to read user's saved language (if any) from localStorage.
     let savedLang = null;
-    try { savedLang = localStorage.getItem('lang') || null; } catch(_){}
+    try {
+        savedLang = localStorage.getItem('lang') || null;
+    } catch (_) {}
 
+// Decide the current language in this order: URL prefix -> saved value -> default 'en'.
     let currentLang = sanitizeLang(pathLangFromURL || savedLang || 'en');
 
-    function switchTo(lang){
+    function switchTo(lang) {
         lang = sanitizeLang(lang);
-        try { localStorage.setItem('lang', lang); } catch(_){}
-        // Usuń wiodący prefix językowy z bieżącej ścieżki i zbuduj nową
-        let base = location.pathname.replace(/^\/(en|pl|es)(?=\/|$)/,'');
+        try { localStorage.setItem('lang', lang); } catch (_) {}
+
+        // Remove any existing language prefix (/pl or /es) from the current path.
+        let base = location.pathname.replace(/^\/(pl|es)(?=\/|$)/, '');
+
+        // Ensure the path ends with a slash if it's not a file (to keep relative URLs consistent).
         const last = base.split('/').pop() || '';
         const isFile = /\.[a-z0-9]+$/i.test(last);
         if (!base) base = '/';
         if (!isFile && !base.endsWith('/')) base += '/';
-        const cleanQuery = location.search.replace(/([?&])lang=(en|pl|es)\b/gi,'$1').replace(/[?&]$/,'');
-        location.href = `/${lang}${base}` + cleanQuery + location.hash;
+
+        // Clean up any existing lang query parameter (if present).
+        const cleanQuery = location.search
+            .replace(/([?&])lang=(en|pl|es)\b/gi, '$1')
+            .replace(/[?&]$/, '');
+
+        // Build the new URL. English stays at the root (no prefix); pl and es get a prefix.
+        if (lang === 'en') {
+            location.href = `${base}${cleanQuery}${location.hash}`;
+        } else {
+            location.href = `/${lang}${base}${cleanQuery}${location.hash}`;
+        }
     }
 
     /* ----------------- Flags (desktop + mobile mounts) ----------------- */
