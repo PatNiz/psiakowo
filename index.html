@@ -1,24 +1,80 @@
 <!doctype html>
 <html lang="pl">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title data-i18n="title">Psiakowo – Mastif pirenejski (hodowla)</title>
-    <meta name="description" content="Hodowla mastifa pirenejskiego – informacje o rasie, galeria, opinie, kontakt i dojazd." data-i18n="meta_description" />
-    <meta property="og:title" content="Psiakowo – Mastif pirenejski" data-i18n="og_title" />
-    <meta property="og:description" content="Mastif pirenejski – poznaj rasę, zobacz galerię i skontaktuj się z hodowlą." data-i18n="og_description" />
-    <meta property="og:type" content="website" />
-    <meta property="og:locale" content="pl_PL" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/styles.css">
-  </head>
+<head>
+  <!-- Basics -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <title>Pyrenean Puppies – Great Pyrenees breeder</title>
+  <meta name="description" content="Pyrenean Puppies – Great Pyrenees (Pyrenean Mountain Dog) breeder. Breed info, gallery, puppies, and contact." />
+  <link rel="canonical" href="https://pyreneanpuppies.com/" />
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="alternate icon" href="/assets/favicon.png">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <!-- CSS / JS -->
+  <link rel="preload" as="style" href="/assets/styles.css">
+  <link rel="stylesheet" href="/assets/styles.css">
+  <script defer src="/assets/app.js"></script>
+
+  <meta name="theme-color" content="#ffffff">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Pyrenean Puppies" />
+  <meta property="og:url" content="https://pyreneanpuppies.com/" />
+  <meta property="og:title" content="Pyrenean Puppies – Great Pyrenees breeder" />
+  <meta property="og:description" content="Great Pyrenees breeder. Learn about the breed, see our gallery, and get in touch." />
+  <meta property="og:image" content="https://pyreneanpuppies.com/assets/og.jpg" />
+  <meta property="og:image:alt" content="Pyrenean Puppies logo" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Pyrenean Puppies – Great Pyrenees breeder">
+  <meta name="twitter:description" content="Great Pyrenees breeder. Learn about the breed, see our gallery, and get in touch.">
+  <meta name="twitter:image" content="https://pyreneanpuppies.com/assets/og.jpg">
+
+  <!-- Hreflang (jeśli masz tylko angielską wersję) -->
+  <link rel="alternate" href="https://pyreneanpuppies.com/" hreflang="en" />
+  <link rel="alternate" href="https://pyreneanpuppies.com/" hreflang="x-default" />
+
+  <!-- Structured data -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"Organization",
+    "name":"Pyrenean Puppies",
+    "url":"https://pyreneanpuppies.com",
+    "logo":"https://pyreneanpuppies.com/assets/logo.png",
+    "sameAs":[
+      "https://www.instagram.com/yourprofile",
+      "https://www.facebook.com/yourprofile"
+    ]
+  }
+  </script>
+
+  <!-- (Optional) Preload hero image -->
+  <link rel="preload" as="image"
+        href="/assets/img/hero-1600.avif"
+        imagesrcset="/assets/img/hero-960.avif 960w, /assets/img/hero-1600.avif 1600w, /assets/img/hero-2200.avif 2200w"
+        imagesizes="100vw"
+        fetchpriority="high">
+</head>
+
+
   <body>
     <header>
       <div class="container nav" role="navigation" aria-label="Główne">
-        <a href="#start" class="brand">
-          <span class="logo">🐾</span>
-          <span>Psiakowo</span>
+        <a href="#start" class="brand" aria-label="Pyrenean Puppies – home">
+          <span class="logo" aria-hidden="true">🐾</span>
+         <span class="brand-text">Pyrenean Puppies</span>
         </a>
         <div class="menu-wrap">
           <button class="hamburger" id="mobileToggle" aria-expanded="false" aria-controls="mobileMenu" aria-label="Otwórz menu">
