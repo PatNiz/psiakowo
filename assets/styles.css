@@ -1,6 +1,6 @@
-/* ===================== THEME: LIGHT, CLEAN, MODERN ===================== */
+/* ===================== THEME ===================== */
 :root{
-  :root { --parallax-y: 0px; }
+  --parallax-y: 0px;
   --bg:#f6f8fb;
   --bg-2:#E9D4BF;
   --surface:#fff;
@@ -20,7 +20,6 @@
   --shadow-md:0 6px 18px rgba(2,6,23,.10), 0 2px 6px rgba(2,6,23,.06);
   --shadow-lg:0 16px 40px rgba(2,6,23,.12);
 
-  /* motion */
   --anim-in:cubic-bezier(.22,.61,.36,1);
   --anim-fast:.2s var(--anim-in);
   --anim-med:.35s var(--anim-in);
@@ -170,7 +169,6 @@ section{ padding:64px 0; scroll-margin-top:100px }
   transition:transform var(--anim-med), box-shadow var(--anim-med), border-color var(--anim-med);
   transform-style:preserve-3d;
 }
-/* hover dla wszystkich kart, ALE nie dla .puppy-card */
 .card:hover:not(.puppy-card){
   transform:translateY(-4px) rotateX(2deg) rotateY(-2deg);
   box-shadow:var(--shadow-md);
@@ -258,18 +256,28 @@ section .section-title{ animation:fadeUp var(--anim-slow) both }
 .snap{ opacity:0; transform:translateY(8px) scale(.992); filter:blur(2px) }
 @media (prefers-reduced-motion:reduce){ .snap{ opacity:1; transform:none; filter:none } }
 
-/* ===================== LIGHTBOX BACKDROP (blur) ===================== */
-dialog::backdrop{
+/* ===================== LIGHTBOX (dialog) ===================== */
+dialog.lb{
+  padding:0; border:none; background:transparent;
+}
+dialog.lb::backdrop{
   backdrop-filter:blur(8px) saturate(1.05);
   background:rgba(15,23,42,.35);
   transition:backdrop-filter .25s ease, background .25s ease;
 }
-/* fallback: klasa na <html> podczas otwartego dialogu */
+html.lb-open{ overflow:hidden }
+dialog.lb img{
+  max-width: min(92vw, 1200px);
+  max-height: 85vh;
+  border-radius: 14px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.35);
+}
+
+/* Fallback – lekkie rozmycie całej strony */
 html.lb-open body > *:not(dialog){
   filter:blur(8px) saturate(1.05);
   transition:filter .25s ease;
 }
-html.lb-open{ overflow:hidden }
 
 /* ===================== HERO MOBILE ORDER ===================== */
 @media (max-width:900px){
@@ -322,17 +330,17 @@ img{ cursor:zoom-in }
 /* ===================== PUPPIES: MINI-CAROUSEL ===================== */
 .puppy-slider{
   position:relative;
-  padding:8px;                          /* oddech od ramki */
+  padding:8px;
   background:var(--panel);
   border-radius:calc(var(--radius) - 2px);
   overflow:hidden;
+  touch-action: pan-y;            /* ważne dla drag + scroll */
 }
 .puppy-img{
   aspect-ratio:4/3; object-fit:cover;
-  border-radius:12px;                   /* miękkie narożniki samego zdjęcia */
+  border-radius:12px;
+  user-select:none; -webkit-user-drag:none;
 }
-
-/* nawigacja */
 .puppy-prev, .puppy-next{
   position:absolute; top:50%; transform:translateY(-50%);
   display:grid; place-items:center;
@@ -340,12 +348,11 @@ img{ cursor:zoom-in }
   border:1px solid var(--border);
   background:rgba(255,255,255,.85);
   color:var(--text); font-size:20px; font-weight:800;
-  box-shadow:var(--shadow-sm); cursor:pointer;
+  box-shadow:var(--shadow-sm); cursor:pointer; z-index:2;
 }
-.puppy-prev{ left:12px }               /* lekko dalej po dodaniu paddingu */
+.puppy-prev{ left:12px }
 .puppy-next{ right:12px }
 .puppy-prev:hover, .puppy-next:hover{ filter:saturate(1.05); box-shadow:var(--shadow-md) }
-
 .puppy-dots{
   position:absolute; left:0; right:0; bottom:8px;
   display:flex; justify-content:center; gap:6px;
@@ -355,327 +362,127 @@ img{ cursor:zoom-in }
   background:rgba(15,23,42,.25); box-shadow:var(--shadow-sm); cursor:pointer;
 }
 .puppy-dot.active{ background:rgba(232,154,91,.95) }
+.puppy-slider .puppy-link{ cursor: grab; }
+.puppy-slider.dragging .puppy-link{ cursor: grabbing; }
 
-.puppy-slider .puppy-link{
-  cursor: grab;
-}
-.puppy-slider.dragging .puppy-link{
-  cursor: grabbing;
-}
-.puppy-prev, .puppy-next { z-index: 2; }
-
-
-
-
-
-/* ===================== O RASIE – stylizacja sekcji ===================== */
+/* ===================== O RASIE (styling) ===================== */
 #orasie { position: relative; }
-
-/* Sekcje/panele w tej części */
 #orasie .panel{
   border-radius: var(--radius);
   border: 1px solid var(--border);
   background: var(--panel);
   box-shadow: var(--shadow-sm);
 }
-
-/* Nagłówki bloków */
-#orasie .section-title{
-  margin-bottom: 18px;
-}
-
-/* Karty w siatce: 3 kolumny desktop, 2 tablet, 1 mobile */
+#orasie .section-title{ margin-bottom: 18px; }
 #orasie .cards{
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  perspective: none;           /* bez tiltów */
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; perspective: none;
 }
 #orasie .card{
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  background: var(--panel);
-  box-shadow: var(--shadow-sm);
+  border-radius: var(--radius); border: 1px solid var(--border);
+  background: var(--panel); box-shadow: var(--shadow-sm);
   transition: box-shadow var(--anim-fast), transform var(--anim-fast), border-color var(--anim-fast);
 }
 #orasie .card:hover{
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-  border-color: rgba(232,154,91,.22); /* lekki akcent */
+  transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: rgba(232,154,91,.22);
 }
 #orasie .card .p{ padding: 16px 16px 14px; }
-
-/* Paski tytułowe (pill) – lekko cieplejsze */
 #orasie .pill{
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  letter-spacing: .3px;
-  text-transform: uppercase;
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; letter-spacing: .3px; text-transform: uppercase;
   color: var(--muted);
-  padding: 6px 10px;
-  border-radius: 999px;
-  border: 1px solid rgba(232,154,91,.25);
-  background: rgba(232,154,91,.10);
+  padding: 6px 10px; border-radius: 999px;
+  border: 1px solid rgba(232,154,91,.25); background: rgba(232,154,91,.10);
 }
-
-/* Podtytuły kart */
-#orasie .card h3{
-  margin: 10px 0 8px;
-  font-size: 18px;
-  line-height: 1.25;
-}
-
-/* Listy: czytelne, zwiewne, z własnym znacznikiem */
-#orasie .list{
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
-  gap: 8px;
-}
+#orasie .card h3{ margin: 10px 0 8px; font-size: 18px; line-height: 1.25; }
+#orasie .list{ margin:0; padding:0; list-style:none; display:grid; gap:8px }
 #orasie .list li{
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 10px;
-  align-items: start;
+  display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start;
 }
-#orasie .list b{
-  min-width: 92px;             /* trochę węższe niż globalne */
-  color: var(--muted);
-  font-weight: 600;
-}
-#orasie .list li:not(:has(b)) { /* proste listy bez labela po lewej */
-  grid-template-columns: 1fr;
-  position: relative;
-  padding-left: 20px;
+#orasie .list b{ min-width: 92px; color: var(--muted); font-weight: 600; }
+#orasie .list li:not(:has(b)) {
+  grid-template-columns: 1fr; position: relative; padding-left: 20px;
 }
 #orasie .list li:not(:has(b))::before{
-  content: "";
-  position: absolute;
-  left: 4px; top: .6em;
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: var(--accent-3);
-  box-shadow: 0 0 0 2px rgba(232,154,91,.15);
+  content: ""; position: absolute; left: 4px; top: .6em;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--accent-3); box-shadow: 0 0 0 2px rgba(232,154,91,.15);
 }
 
-/* FAQ – details/summary */
-#orasie details{
-  border-top: 1px solid var(--border);
-  padding: 10px 0;
-}
-#orasie details:first-of-type{
-  border-top: none;
-  padding-top: 0;
-}
+/* FAQ details */
+#orasie details{ border-top: 1px solid var(--border); padding: 10px 0; }
+#orasie details:first-of-type{ border-top: none; padding-top: 0; }
 #orasie summary{
-  cursor: pointer;
-  list-style: none; /* Safari */
+  cursor: pointer; list-style: none;
   display: flex; align-items: center; gap: 10px;
-  padding: 10px 2px;
-  border-radius: 10px;
-  transition: background var(--anim-fast);
+  padding: 10px 2px; border-radius: 10px; transition: background var(--anim-fast);
 }
 #orasie summary::-webkit-details-marker{ display:none; }
 #orasie summary:hover{ background: rgba(15,23,42,.04); }
 #orasie summary::before{
-  content: "▸";
-  font-size: 14px;
-  transform: translateY(1px);
-  transition: transform var(--anim-fast);
-  color: var(--muted);
+  content: "▸"; font-size: 14px; transform: translateY(1px); transition: transform var(--anim-fast); color: var(--muted);
 }
-#orasie details[open] summary::before{
-  transform: rotate(90deg);
+#orasie details[open] summary::before{ transform: rotate(90deg); }
+#orasie details p{ margin: 6px 0 4px; color: var(--muted); }
+
+/* Specs grid */
+#orasie .breed-specs { margin-top: 18px; }
+#orasie .breed-specs .note{ margin-top: 10px; color: var(--muted); font-size: 14px; }
+#orasie .spec-grid{
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px 16px; margin: 0;
 }
-#orasie details p{
-  margin: 6px 0 4px;
-  color: var(--muted);
+#orasie .spec-grid > div{
+  border: 1px solid var(--border); border-radius: 12px; background: var(--panel);
+  padding: 12px 14px; box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--anim-fast), transform var(--anim-fast), border-color var(--anim-fast);
 }
-
-/* Intro panel – większa czytelność */
-#orasie .panel .lead{
-  margin: 0;
-  font-size: 17px;
-  line-height: 1.6;
-  color: var(--muted);
+#orasie .spec-grid > div:hover{
+  transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: rgba(232,154,91,.18);
 }
+#orasie .spec-grid dt{
+  font-size: 12px; text-transform: uppercase; letter-spacing: .3px;
+  color: var(--muted); margin: 0 0 6px;
+}
+#orasie .spec-grid dd{ margin:0; color: var(--text); font-weight: 600; line-height: 1.5; }
 
-/* Delikatna „linia akcentowa” na górze sekcji (opcjonalnie) */
-
-
-/* Responsywność sekcji „O rasie” */
+/* Responsive */
 @media (max-width: 1024px){
   #orasie .cards{ grid-template-columns: repeat(2, 1fr); }
+  #orasie .spec-grid{ grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 640px){
   #orasie .cards{ grid-template-columns: 1fr; }
   #orasie .list b{ min-width: 80px; }
   #orasie summary{ padding: 10px 0; }
-}
-
-
-/* ===== O RASIE: tabela/specyfikacja ===== */
-#orasie .breed-specs { margin-top: 18px; }
-#orasie .breed-specs .note{
-  margin-top: 10px; color: var(--muted); font-size: 14px;
-}
-
-#orasie .spec-grid{
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px 16px;
-  margin: 0;
-}
-
-#orasie .spec-grid > div{
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: var(--panel);
-  padding: 12px 14px;
-  box-shadow: var(--shadow-sm);
-  transition: box-shadow var(--anim-fast), transform var(--anim-fast), border-color var(--anim-fast);
-}
-#orasie .spec-grid > div:hover{
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-  border-color: rgba(232,154,91,.18);
-}
-
-#orasie .spec-grid dt{
-  font-size: 12px; text-transform: uppercase; letter-spacing: .3px;
-  color: var(--muted); margin: 0 0 6px;
-}
-#orasie .spec-grid dd{
-  margin: 0; color: var(--text); font-weight: 600; line-height: 1.5;
-}
-
-/* responsywność */
-@media (max-width: 1024px){
-  #orasie .spec-grid{ grid-template-columns: repeat(2, 1fr); }
-}
-@media (max-width: 640px){
   #orasie .spec-grid{ grid-template-columns: 1fr; }
 }
 
-/* ===== O RASIE – akordeon tylko na mobile ===== */
+/* Mobile accordion variant */
 @media (max-width: 640px){
   #orasie .cards{ grid-template-columns: 1fr !important; }
-
-  #orasie .cards.is-accordion .card{
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-  }
+  #orasie .cards.is-accordion .card{ border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
   #orasie .cards.is-accordion .card .p{ padding: 0; }
-
-  /* <details> jako panel */
   #orasie .breed-acc{ border: 0; }
   #orasie .breed-acc > summary{
-    display: flex; align-items: center; gap: 10px;
-    padding: 14px 16px;
-    cursor: pointer; list-style: none;
-    background: var(--panel);
-    border-bottom: 1px solid var(--border);
+    display:flex; align-items:center; gap:10px; padding:14px 16px; cursor:pointer; list-style:none;
+    background:var(--panel); border-bottom:1px solid var(--border);
   }
   #orasie .breed-acc > summary::-webkit-details-marker{ display:none; }
-
-  /* strzałka */
   #orasie .breed-acc > summary::after{
-    content: "▾";
-    margin-left: auto; transform: rotate(-90deg);
-    transition: transform var(--anim-fast);
-    color: var(--muted);
+    content:"▾"; margin-left:auto; transform:rotate(-90deg); transition:transform var(--anim-fast); color:var(--muted);
   }
-  #orasie .breed-acc[open] > summary::after{ transform: rotate(0deg); }
-
-  /* tytuł w summary */
-  #orasie .breed-acc .acc-title{
-    font-weight: 800; line-height: 1.2;
+  #orasie .breed-acc[open] > summary::after{ transform:rotate(0deg); }
+  #orasie .breed-acc .acc-title{ font-weight:800; line-height:1.2; }
+  #orasie .breed-acc .pill{ border:1px solid rgba(232,154,91,.25); background:rgba(232,154,91,.10); }
+  #orasie .breed-acc .acc-body{ padding:12px 16px 14px; background:var(--panel); }
+  #orasie .breed-acc .list{ display:grid; gap:8px; }
+  #orasie .breed-acc .list li{ display:grid; grid-template-columns:auto 1fr; gap:10px; align-items:start; }
+  #orasie .breed-acc .list b{ min-width:120px; color:var(--muted); font-weight:600; }
+  #orasie .breed-acc .acc-body > .list + .list{
+    margin-top: 10px; padding-top: 10px; border-top: 1px dashed rgba(2,6,23,.08);
   }
-  #orasie .breed-acc .pill{
-    border: 1px solid rgba(232,154,91,.25);
-    background: rgba(232,154,91,.10);
-  }
-
-  /* treść panelu */
-  #orasie .breed-acc .acc-body{
-    padding: 12px 16px 14px;
-    background: var(--panel);
-  }
-  #orasie .breed-acc .list{
-    margin: 0; padding: 0; list-style: none; display: grid; gap: 8px;
-  }
-  #orasie .breed-acc .list li{
-    display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start;
-  }
-  #orasie .breed-acc .list b{
-    min-width: 120px; color: var(--muted); font-weight: 600;
-  }
-  /* Akordeon „O rasie” – bez wewnętrznej kreski */
-  @media (max-width: 640px){
-    #orasie .cards.is-accordion .card{
-      /* jeśli chcesz całkiem bez ramki karty, odkomentuj następną linijkę */
-      /* border: none; box-shadow: var(--shadow-sm); */
-    }
-    #orasie .breed-acc > summary{
-      border-bottom: none;           /* usuń podłużną kreskę */
-      background: var(--panel);      /* czyste tło */
-      padding: 14px 16px;
-    }
-    /* delikatny separator tylko w treści, jeśli masz wiele list */
-    #orasie .breed-acc .acc-body > .list + .list{
-      margin-top: 10px;
-      padding-top: 10px;
-      border-top: 1px dashed rgba(2,6,23,.08);
-    }
-  }
-.hero-card picture, .hero-card img { display:block; width:100%; height:auto; }
 }
 
-
-.lang-menu {
-  display: none;
-  position: absolute;
-  right: 0;
-  top: calc(100% + 6px);
-  min-width: 140px;
-  padding: 6px;
-  background: var(--surface, #fff);
-  border: 1px solid var(--border, rgba(0,0,0,.12));
-  border-radius: 12px;
-  box-shadow: 0 10px 24px rgba(0,0,0,.12);
-  z-index: 9999;
-}
-
-.lang-menu.open {
-  display: block;
-}
-
-.lang-menu li {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 10px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.lang-menu li:hover,
-.lang-menu li[aria-selected="true"] {
-  background: rgba(0,0,0,.06);
-}
-
-/* Ważne: nie obcinaj dropdownu */
-header .menu,
-.nav .menu,
-.menu-wrap {
-  overflow: visible; /* jeżeli gdzieś masz hidden */
-}
-
-
+/* ===================== Flags (języki) ===================== */
 .lang-flags{ display:flex; gap:8px; align-items:center; }
 .lang-flags .flag-btn{
   display:inline-flex; align-items:center; justify-content:center;
@@ -690,5 +497,18 @@ header .menu,
   outline:2px solid var(--accent-2, #e89a5b); outline-offset:2px; border-color:transparent;
 }
 
-/* upewnij się, że dropdown/flag nie są ucinane przez header */
-header, .nav, .menu, .menu-wrap { overflow: visible !important; }
+/* ===================== Dropdown (jeśli używasz) ===================== */
+.lang-menu{
+  display:none; position:absolute; right:0; top:calc(100% + 6px);
+  min-width:140px; padding:6px; background:var(--surface, #fff);
+  border:1px solid var(--border, rgba(0,0,0,.12));
+  border-radius:12px; box-shadow:0 10px 24px rgba(0,0,0,.12); z-index:9999;
+}
+.lang-menu.open{ display:block; }
+.lang-menu li{
+  display:flex; align-items:center; gap:8px; padding:8px 10px; border-radius:8px; cursor:pointer;
+}
+.lang-menu li:hover, .lang-menu li[aria-selected="true"]{ background: rgba(0,0,0,.06); }
+
+/* Ważne: dropdown/flag nie może być ucinany */
+header .menu, .nav .menu, .menu-wrap, header, .nav { overflow: visible !important; }
