@@ -10,9 +10,21 @@
 
 
   <!-- Favicons -->
-  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
-  <link rel="alternate icon" href="/assets/favicon.png">
+  <link rel="icon" href="/favicon.ico">
 
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#ffffff">
+
+  <!-- opcjonalne dodatki -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta name="msapplication-config" content="/browserconfig.xml">
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -79,42 +91,23 @@
             "addressLocality":"Ochmanów",
             "addressCountry":"PL"
           },
-          "sameAs":[
-            "https://maps.app.goo.gl/kCkX15NPyEMqLhUFA"
-          ]
+          "sameAs":["https://maps.app.goo.gl/kCkX15NPyEMqLhUFA"]
         },
         {
           "@type":"WebSite",
           "@id":"https://pyreneanpuppies.com/#website",
           "url":"https://pyreneanpuppies.com/",
           "name":"Pyrenean Puppies",
-          "inLanguage":"en",
-          "potentialAction":{
-            "@type":"SearchAction",
-            "target":"https://pyreneanpuppies.com/?q={search_term_string}",
-            "query-input":"required name=search_term_string"
-          }
+          "inLanguage":"en"
         },
         {
-          "@type":"FAQPage",
-          "@id":"https://pyreneanpuppies.com/#faq",
-          "mainEntity":[
-            {
-              "@type":"Question",
-              "name":"Do you ship Pyrenean Mastiff puppies across Europe?",
-              "acceptedAnswer":{"@type":"Answer","text":"Yes. We arrange safe EU transport with all papers and health checks. Contact us for routes and timing."}
-            },
-            {
-              "@type":"Question",
-              "name":"What health tests do the parents have?",
-              "acceptedAnswer":{"@type":"Answer","text":"Parents are screened for hip and elbow dysplasia (HD/ED). Puppies leave with contract, microchip and health booklet."}
-            },
-            {
-              "@type":"Question",
-              "name":"What is the typical temperament of the Pyrenean Mastiff?",
-              "acceptedAnswer":{"@type":"Answer","text":"Calm, devoted and vigilant—family-friendly livestock guardian that needs space and consistent handling."}
-            }
-          ]
+          "@type":"WebPage",
+          "@id":"https://pyreneanpuppies.com/#webpage",
+          "url":"https://pyreneanpuppies.com/",
+          "name":"Pyrenean Mastiff Breeder in Europe – Puppies from Poland",
+          "isPartOf":{"@id":"https://pyreneanpuppies.com/#website"},
+          "inLanguage":"en",
+          "description":"Family Pyrenean Mastiff (Mastín del Pirineo) kennel near Kraków, Poland. Well-socialized puppies with pedigree for loving homes across Europe."
         }
       ]
     }
@@ -208,7 +201,7 @@
   <div class="container">
     <h2 class="section-title">About us</h2>
     <p class="lead">
-    <p><strong>Our Story 🐾</strong>
+    <p><strong>Our Story 🐾</strong> </p>
       Welcome to our home — and to the world of the majestic Pyrenean Mastiff.
       We are a small, family-run kennel located in the beautiful south of Poland, on the outskirts
       of Kraków, close to the mountains. Our family is a blend of Spanish and Polish roots — my
