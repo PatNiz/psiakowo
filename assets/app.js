@@ -9,34 +9,46 @@
     const $  = (q, r=document) => r.querySelector(q);
     const $$ = (q, r=document) => Array.from(r.querySelectorAll(q));
 
-    /* ----------------- Language ----------------- */
+    /* ----------------- Language (no soft redirects) ----------------- */
     const LANGS = ['en','pl','es'];
     const sanitizeLang = l => LANGS.includes(l) ? l : 'en';
 
     const pathLangFromURL =
         location.pathname.startsWith('/pl/') ? 'pl' :
             location.pathname.startsWith('/es/') ? 'es' :
-                location.pathname.startsWith('/en/') ? 'en' : null;
-
+                // legacy /en/ traktuj jako en, ale EN ma być root
+                location.pathname.startsWith('/en/') ? 'en' :
+                    null;
 
     let currentLang = sanitizeLang(pathLangFromURL || 'en');
 
-
-
-    function switchTo(lang){
+    function switchTo(lang) {
         lang = sanitizeLang(lang);
         try { localStorage.setItem('lang', lang); } catch(_){}
-        // Usuń wiodący prefix językowy z bieżącej ścieżki i zbuduj nową
-        let base = location.pathname.replace(/^\/(en|pl|es)(?=\/|$)/,'');
+
+        // Usuń ewentualny prefiks językowy z bieżącej ścieżki
+        let base = location.pathname.replace(/^\/(en|pl|es)(?=\/|$)/, '');
+        if (!base) base = '/';
+        // Zachowaj trailing slash dla katalogów
         const last = base.split('/').pop() || '';
         const isFile = /\.[a-z0-9]+$/i.test(last);
-        if (!base) base = '/';
         if (!isFile && !base.endsWith('/')) base += '/';
-        const cleanQuery = location.search.replace(/([?&])lang=(en|pl|es)\b/gi,'$1').replace(/[?&]$/,'');
-        location.href = `/${lang}${base}` + cleanQuery + location.hash;
+
+        const cleanQuery = location.search
+            .replace(/([?&])lang=(en|pl|es)\b/gi, '$1')
+            .replace(/[?&]$/, '');
+
+        // EN -> root '/', PL/ES -> '/pl/' '/es/'
+        const langPrefix = (lang === 'en') ? '' : `/${lang}`;
+        const target = `${langPrefix}${base}${cleanQuery}${location.hash}`;
+
+        // Jeżeli już jesteśmy na docelowym URL-u, nie rób przejścia
+        if (target === location.pathname + location.search + location.hash) return;
+
+        location.href = target || '/';
     }
 
-    /* ----------------- Flags (desktop + mobile mounts) ----------------- */
+    /* ----------------- Flags ----------------- */
     (function initFlags(){
         const mounts = ['langFlags','langFlagsMobile'].map(id => document.getElementById(id)).filter(Boolean);
         if (!mounts.length) return;
