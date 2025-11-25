@@ -143,7 +143,7 @@
 
     /* ----------------- Puppies data ----------------- */
     const puppiesData = [
-        { id:'B1', name:'Black',      sex:'suczka',   status:'available', imgs:['/assets/szczeniaki/Black1.jpg','/assets/szczeniaki/Black2.jpg']},
+        { id:'B1', name:'Black',      sex:'suczka',   status:'available', imgs:['/assets/szczeniaki/Black1.jpg','/assets/szczeniaki/Black2.jpg','/assets/szczeniaki/Black3.jpg','/assets/szczeniaki/Black4.jpg','/assets/szczeniaki/Black5.jpg', '/assets/szczeniaki/Black6.jpg', '/assets/szczeniaki/Black7.jpg', '/assets/szczeniaki/Black8.jpg']},
         { id:'B2', name:'Blue',       sex:'suczka',   status:'available',  imgs:['/assets/szczeniaki/Blue1.jpg','/assets/szczeniaki/Blue2.jpg']},
         { id:'G1', name:'Green',      sex:'pies',   status:'available', imgs:['/assets/szczeniaki/Green1.jpg','/assets/szczeniaki/Green2.jpg']},
         { id:'LB1',name:'Light Blue', sex:'pies',   status:'available', imgs:['/assets/szczeniaki/LightBlue1.jpg','/assets/szczeniaki/LightBlue2.jpg']},
