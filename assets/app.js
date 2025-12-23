@@ -144,13 +144,13 @@
     /* ----------------- Puppies data ----------------- */
     const puppiesData = [
         { id:'B1', name:'Perla',      sex:'suczka',   status:'available', imgs:['/assets/szczeniaki/Black3.jpg','/assets/szczeniaki/Black4.jpg','/assets/szczeniaki/Black5.jpg', '/assets/szczeniaki/Black6.jpg', '/assets/szczeniaki/Black7.jpg', '/assets/szczeniaki/Black8.jpg']},
-        { id:'B2', name:'Plata',       sex:'suczka',   status:'available',  imgs:['/assets/szczeniaki/Blue3.jpg','/assets/szczeniaki/Blue4.jpg','/assets/szczeniaki/Blue5.jpg','/assets/szczeniaki/Blue1.jpg','/assets/szczeniaki/Blue2.jpg']},
+        { id:'B2', name:'Plata',       sex:'suczka',   status:'sold',  imgs:['/assets/szczeniaki/Blue3.jpg','/assets/szczeniaki/Blue4.jpg','/assets/szczeniaki/Blue5.jpg','/assets/szczeniaki/Blue1.jpg','/assets/szczeniaki/Blue2.jpg']},
         { id:'G1', name:'Platino',      sex:'pies',   status:'available', imgs:['/assets/szczeniaki/Platino1.jpg','/assets/szczeniaki/Platino4.jpg','/assets/szczeniaki/Platino6.jpg','/assets/szczeniaki/Platino7.jpg','/assets/szczeniaki/Green1.jpg','/assets/szczeniaki/Green2.jpg']},
         { id:'LB1',name:'Platero', sex:'pies',   status:'available', imgs:['/assets/szczeniaki/Platero1.jpg','/assets/szczeniaki/Platero2.jpg','/assets/szczeniaki/Platero4.jpg','/assets/szczeniaki/Platero8.jpg','/assets/szczeniaki/LightBlue1.jpg','/assets/szczeniaki/LightBlue2.jpg']},
         { id:'O1', name:'Peitolobo',     sex:'pies',   status:'available', imgs:['/assets/szczeniaki/Peitolobo1.jpg','/assets/szczeniaki/Peitolobo2.jpg','/assets/szczeniaki/Peitolobo4.jpg','/assets/szczeniaki/Peitolobo7.jpg','/assets/szczeniaki/Peitolobo8.jpg','/assets/szczeniaki/Orange1.jpg','/assets/szczeniaki/Orange2.jpg']},
-        { id:'P1', name:'Petra preciosa',       sex:'suczka',   status:'available', imgs:['/assets/szczeniaki/Pink3.jpg','/assets/szczeniaki/Pink4.jpg','/assets/szczeniaki/Pink1.jpg','/assets/szczeniaki/Pink2.jpg']},
-        { id:'R1', name:'Patron',        sex:'pies',   status:'available', imgs:['/assets/szczeniaki/Red4.jpg','/assets/szczeniaki/Red5.jpg','/assets/szczeniaki/Red6.jpg','/assets/szczeniaki/Red7.jpg','/assets/szczeniaki/Red1.jpg','/assets/szczeniaki/Red2.jpg']},
-        { id:'Y1', name:'Polonia Ambar',     sex:'suczka',   status:'available', imgs:['/assets/szczeniaki/Yellow3.jpg','/assets/szczeniaki/Yellow4.jpg','/assets/szczeniaki/Yellow8.jpg','/assets/szczeniaki/Yellow9.jpg','/assets/szczeniaki/Yellow10.jpg','/assets/szczeniaki/Yellow1.jpg','/assets/szczeniaki/Yellow2.jpg']}
+        { id:'P1', name:'Petra preciosa',       sex:'suczka',   status:'sold', imgs:['/assets/szczeniaki/Pink3.jpg','/assets/szczeniaki/Pink4.jpg','/assets/szczeniaki/Pink1.jpg','/assets/szczeniaki/Pink2.jpg']},
+        { id:'R1', name:'Patron',        sex:'pies',   status:'sold', imgs:['/assets/szczeniaki/Red4.jpg','/assets/szczeniaki/Red5.jpg','/assets/szczeniaki/Red6.jpg','/assets/szczeniaki/Red7.jpg','/assets/szczeniaki/Red1.jpg','/assets/szczeniaki/Red2.jpg']},
+        { id:'Y1', name:'Polonia Ambar',     sex:'suczka',   status:'sold', imgs:['/assets/szczeniaki/Yellow3.jpg','/assets/szczeniaki/Yellow4.jpg','/assets/szczeniaki/Yellow8.jpg','/assets/szczeniaki/Yellow9.jpg','/assets/szczeniaki/Yellow10.jpg','/assets/szczeniaki/Yellow1.jpg','/assets/szczeniaki/Yellow2.jpg']}
     ];
 
     /* ----------------- Puppies renderer/slider ----------------- */
