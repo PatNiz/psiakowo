@@ -133,9 +133,9 @@
 
     /* ----------------- Puppies text labels ----------------- */
     const STR_BY_LANG = {
-        en: { male:'male', female:'female', available:'Available', reserved:'Reserved', sold:'Sold' },
-        pl: { male:'pies', female:'suczka',   available:'Dostępny/a', reserved:'Zarezerwowany/a', sold:'Sprzedany/a' },
-        es: { male:'macho',female:'hembra', available:'Disponible', reserved:'Reservado/a',     sold:'Vendido/a' }
+        en: { male:'male', female:'female', available:'Available', reserved:'Reserved', sold:'Not available' },
+        pl: { male:'pies', female:'suczka',   available:'Dostępny/a', reserved:'Zarezerwowany/a', sold:'Nie dostępny' },
+        es: { male:'macho',female:'hembra', available:'Disponible', reserved:'Reservado/a',     sold:'No disponible' }
     };
     const strFor = () => (STR_BY_LANG[currentLang] || STR_BY_LANG.en);
     const textStatus = (s) => ({ available: strFor().available, reserved: strFor().reserved, sold: strFor().sold }[s] || s);
