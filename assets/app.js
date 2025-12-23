@@ -143,7 +143,7 @@
 
     /* ----------------- Puppies data ----------------- */
     const puppiesData = [
-        { id:'B1', name:'Perla',      sex:'suczka',   status:'available', imgs:['/assets/szczeniaki/Black 3.jpg','/assets/szczeniaki/Black 4.jpg','/assets/szczeniaki/Black 5.jpg', '/assets/szczeniaki/Black6.jpg', '/assets/szczeniaki/Black7.jpg', '/assets/szczeniaki/Black8.jpg']},
+        { id:'B1', name:'Perla',      sex:'suczka',   status:'available', imgs:['/assets/szczeniaki/Black3.jpg','/assets/szczeniaki/Black4.jpg','/assets/szczeniaki/Black5.jpg', '/assets/szczeniaki/Black6.jpg', '/assets/szczeniaki/Black7.jpg', '/assets/szczeniaki/Black8.jpg']},
         { id:'B2', name:'Plata',       sex:'suczka',   status:'available',  imgs:['/assets/szczeniaki/Blue3.jpg','/assets/szczeniaki/Blue4.jpg','/assets/szczeniaki/Blue5.jpg','/assets/szczeniaki/Blue1.jpg','/assets/szczeniaki/Blue2.jpg']},
         { id:'G1', name:'Platino',      sex:'pies',   status:'available', imgs:['/assets/szczeniaki/Platino1.jpg','/assets/szczeniaki/Platino4.jpg','/assets/szczeniaki/Platino6.jpg','/assets/szczeniaki/Platino7.jpg','/assets/szczeniaki/Green1.jpg','/assets/szczeniaki/Green2.jpg']},
         { id:'LB1',name:'Platero', sex:'pies',   status:'available', imgs:['/assets/szczeniaki/Platero1.jpg','/assets/szczeniaki/Platero2.jpg','/assets/szczeniaki/Platero4.jpg','/assets/szczeniaki/Platero8.jpg','/assets/szczeniaki/LightBlue1.jpg','/assets/szczeniaki/LightBlue2.jpg']},
