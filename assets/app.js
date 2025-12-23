@@ -143,8 +143,8 @@
 
     /* ----------------- Puppies data ----------------- */
     const puppiesData = [
-        { id:'B1', name:'Black',      sex:'suczka',   status:'available', imgs:['/assets/szczeniaki/Black3.jpg','/assets/szczeniaki/Black4.jpg','/assets/szczeniaki/Black5.jpg', '/assets/szczeniaki/Black6.jpg', '/assets/szczeniaki/Black7.jpg', '/assets/szczeniaki/Black8.jpg']},
-        { id:'B2', name:'Blue',       sex:'suczka',   status:'available',  imgs:['/assets/szczeniaki/Blue1.jpg','/assets/szczeniaki/Blue2.jpg']},
+        { id:'B1', name:'Black',      sex:'suczka',   status:'available', imgs:['/assets/szczeniaki/Black 3.jpg','/assets/szczeniaki/Black 4.jpg','/assets/szczeniaki/Black 5.jpg', '/assets/szczeniaki/Black6.jpg', '/assets/szczeniaki/Black7.jpg', '/assets/szczeniaki/Black8.jpg']},
+        { id:'B2', name:'Blue',       sex:'suczka',   status:'available',  imgs:['/assets/szczeniaki/Blue3.jpg','/assets/szczeniaki/Blue4.jpg','/assets/szczeniaki/Blue5.jpg','/assets/szczeniaki/Blue1.jpg','/assets/szczeniaki/Blue2.jpg']},
         { id:'G1', name:'Green',      sex:'pies',   status:'available', imgs:['/assets/szczeniaki/Green1.jpg','/assets/szczeniaki/Green2.jpg']},
         { id:'LB1',name:'Light Blue', sex:'pies',   status:'available', imgs:['/assets/szczeniaki/LightBlue1.jpg','/assets/szczeniaki/LightBlue2.jpg']},
         { id:'O1', name:'Orange',     sex:'pies',   status:'available', imgs:['/assets/szczeniaki/Orange1.jpg','/assets/szczeniaki/Orange2.jpg']},
